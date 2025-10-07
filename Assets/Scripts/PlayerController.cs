@@ -51,4 +51,11 @@ public class PlayerController : MonoBehaviour
         }
         return angle; //算出した角度をreturnする
     }
+
+    //スポットライトの入手フラグが立っていたらライトをつける
+    public void SpotLightCheck()
+    {
+        if (GameManager.hasSpotLight) spotLight.SetActive(true);
+    }
+    
 }
