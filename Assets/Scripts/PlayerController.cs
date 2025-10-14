@@ -134,6 +134,7 @@ public class PlayerController : MonoBehaviour
             //ゲームオーバー演出.Playerが持っている当たり判定のコンポーネント[Collider2D]の無効化
             this.gameObject.GetComponent<CapsuleCollider2D>().enabled = false;
             rbody.linearVelocity = Vector2.zero; //動きを止める
+            spotLight.SetActive(false);//スポットライトを非表示
             rbody.gravityScale = 1.0f;  //重力の復活
             anime.SetTrigger("dead");   //死亡アニメクリップの発動
             Destroy(gameObject, 1.0f); //１秒後に存在を消去
@@ -152,10 +153,10 @@ public class PlayerController : MonoBehaviour
             GameManager.gameState = GameState.gameover;
 
             // アニメーションや物理停止など必要なら追加
-            anime.SetTrigger("dead");              // 死亡アニメ再生（任意）
+            anime.SetTrigger("dead");              // 死亡アニメ再生
             rbody.linearVelocity = Vector2.zero;   // 動きを止める
             this.gameObject.GetComponent<CircleCollider2D>().enabled = false; // 当たり判定無効
-            Destroy(gameObject, 1.0f);             // 少し待って削除（任意）
+            Destroy(gameObject, 1.0f);             // 少し待って削除
         }
     }
 }
