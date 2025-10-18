@@ -1,15 +1,17 @@
+using System.Collections;
 using UnityEngine;
 
 public class SpotLightItem : MonoBehaviour
 {
-     Rigidbody2D rbody;
+    Rigidbody2D rbody;
+    public float lightDelay = 0.5f;
 
     void Start()
     {
         rbody = GetComponent<Rigidbody2D>();
         rbody.bodyType = RigidbodyType2D.Static;
 
-        if(GameManager.hasSpotLight) Destroy(gameObject);
+        if (GameManager.hasSpotLight) Destroy(gameObject);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -27,7 +29,15 @@ public class SpotLightItem : MonoBehaviour
 
             Destroy(gameObject, 0.5f);
 
-            collision.GetComponent<PlayerController>().SpotLightCheck(); //Playerにライトをつけさせる
+            // 即時ではなく、少し待ってからSpotLightCheckを呼ぶ
+            var pc = collision.GetComponent<PlayerController>();
+            if (pc) StartCoroutine(DelaySpotOn(pc));
+        }
+
+        IEnumerator DelaySpotOn(PlayerController pc)
+        {
+            yield return new WaitForSeconds(lightDelay);
+            if (pc) pc.SpotLightCheck();
         }
     }
 }
