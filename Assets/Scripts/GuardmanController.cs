@@ -126,7 +126,7 @@ public class GuardmanController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("Barrier"))
+        if (collision.gameObject.CompareTag("Smoke"))
         {
             onBarrier = true;
             return;
@@ -136,7 +136,7 @@ public class GuardmanController : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("Barrier"))
+        if (collision.gameObject.CompareTag("Smoke"))
             onBarrier = false;
     }
 

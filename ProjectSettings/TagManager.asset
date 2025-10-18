@@ -5,6 +5,10 @@ TagManager:
   serializedVersion: 3
   tags:
   - Guardman
+  - Pottery
+  - Printing
+  - Smoke
+  - Barrier
   layers:
   - Default
   - TransparentFX
@@ -14,8 +18,8 @@ TagManager:
   - UI
   - Player
   - Guardman
-  - 
-  - 
+  - PotteryMask
+  - PaintingMask
   - 
   - 
   - 
