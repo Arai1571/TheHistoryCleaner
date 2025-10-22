@@ -1,3 +1,4 @@
+using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 using static GameManager;
@@ -20,12 +21,18 @@ public class PlayerController : MonoBehaviour
     bool inBleach; //ブリーチスプレー
 
     [Header("展示品判定用")]
-    [SerializeField] LayerMask potteryMask; //陶器レイヤー
-    [SerializeField] LayerMask paintingMask; //絵画レイヤー
-    [SerializeField] Transform mopOrigin;     // 壺チェックの中心（子）
-    [SerializeField] Transform sprayOrigin;   // 絵チェックの中心（子）
+    bool isPottery; //陶器に触れている
+    GameObject touchObject; //触れている相手
+
+    // [SerializeField] LayerMask potteryMask; //陶器レイヤー
+    // [SerializeField] LayerMask paintingMask; //絵画レイヤー
+
+    // [SerializeField] Transform mopOrigin;     // 壺チェックの中心（子）
+    // [SerializeField] Transform sprayOrigin;   // 絵チェックの中心（子）
     [SerializeField] Vector2 mopBoxSize = new Vector2(1.0f, 0.6f);
     [SerializeField] Vector2 sprayBoxSize = new Vector2(1.2f, 0.7f);
+
+
 
     void Start()
     {
@@ -54,18 +61,26 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetButtonDown("Jump"))
         {
-            if (IsPaintingAhead()) BleachSpray();//ブリーチスプレー
-
-            else if (IsPotteryAhead()) MopAttack();//モップアタック
-
-            bool nearPainting = IsPaintingAhead();
-            bool nearPottery = IsPotteryAhead();
-            Debug.Log($"Jump pressed: painting={nearPainting}, pottery={nearPottery}");
-
-            if (nearPainting) { Debug.Log("→ BleachSpray() 呼ぶ"); BleachSpray(); }
-            else if (nearPottery) { Debug.Log("→ MopAttack() 呼ぶ"); MopAttack(); }
-            else { Debug.Log("→ どちらも前に無し（空振り）"); }
+            if (!inAttack && isPottery)
+            {  //攻撃中
+                StartCoroutine(MopAttack(touchObject));
+                Debug.Log("陶器こわす！");
+            }
         }
+        // if (Input.GetButtonDown("Jump"))
+        // {
+        //     if (IsPaintingAhead()) BleachSpray();//ブリーチスプレー
+
+        //     else if (IsPotteryAhead()) MopAttack();//モップアタック
+
+        //     bool nearPainting = IsPaintingAhead();
+        //     bool nearPottery = IsPotteryAhead();
+        //     Debug.Log($"Jump pressed: painting={nearPainting}, pottery={nearPottery}");
+
+        //     if (nearPainting) { Debug.Log("→ BleachSpray() 呼ぶ"); BleachSpray(); }
+        //     else if (nearPottery) { Debug.Log("→ MopAttack() 呼ぶ"); MopAttack(); }
+        //     else { Debug.Log("→ どちらも前に無し（空振り）"); }
+        // }
 
         Move(); //上下左右の入力値の取得
         angleZ = GetAngle();//その時の角度を変数angleZに反映
@@ -171,21 +186,21 @@ public class PlayerController : MonoBehaviour
     [SerializeField] string atkSide = "PlayerAttack_Side";
     [SerializeField] string atkBack = "PlayerAttack_Back";
 
-    void MopAttack()
-    {
-        if (inAttack || inBleach) { Debug.Log("Mop: 既にアクション中"); return; }
-        inAttack = true;
+    // void MopAttack()
+    // {
+    //     if (inAttack || inBleach) { Debug.Log("Mop: 既にアクション中"); return; }
+    //     inAttack = true;
 
-        anime.SetBool("walk", false);   // ① 歩行OFF
-        int dir = RefreshDirection();   // ② 向き更新
-        anime.SetBool("attack", true);  // ③ 攻撃ON（Animatorのパラメータ名と一致していること）
+    //     anime.SetBool("walk", false);   // ① 歩行OFF
+    //     int dir = RefreshDirection();   // ② 向き更新
+    //     anime.SetBool("attack", true);  // ③ 攻撃ON（Animatorのパラメータ名と一致していること）
 
-        // 保険：必ず再生されるかを切り分ける
-        string s = (dir == 1) ? atkBack : (dir == 0) ? atkFront : atkSide;
-        anime.CrossFade(s, 0.05f, 0, 0f);
+    //     // 保険：必ず再生されるかを切り分ける
+    //     string s = (dir == 1) ? atkBack : (dir == 0) ? atkFront : atkSide;
+    //     anime.CrossFade(s, 0.05f, 0, 0f);
 
-        GameManager.playerHP -= 5;
-    }
+    //     GameManager.playerHP -= 5;
+    // }
 
 
     void StopMopAttack()
@@ -199,7 +214,7 @@ public class PlayerController : MonoBehaviour
     {
         if (inAttack == true || inBleach == true) return;
         inBleach = true;    //ブリーチスプレー中
-        GameManager.playerHP -= 5;//HPを3減らす
+        GameManager.playerHP -= 5;//HPを5減らす
         anime.SetBool("bleach", true);
     }
 
@@ -209,30 +224,51 @@ public class PlayerController : MonoBehaviour
         anime.SetBool("bleach", false);
     }
 
-    Vector2 MopCenter() => mopOrigin ? (Vector2)mopOrigin.position : (Vector2)transform.position;
-    Vector2 SprayCenter() => sprayOrigin ? (Vector2)sprayOrigin.position : (Vector2)transform.position;
+    // Vector2 MopCenter() => mopOrigin ? (Vector2)mopOrigin.position : (Vector2)transform.position;
+    // Vector2 SprayCenter() => sprayOrigin ? (Vector2)sprayOrigin.position : (Vector2)transform.position;
 
-    bool IsPotteryAhead()
+    // bool IsPotteryAhead()
+    // {
+    //     var hits = Physics2D.OverlapBoxAll(MopCenter(), mopBoxSize, 0f, potteryMask);
+    //     return hits != null && hits.Length > 0;
+    // }
+
+    // bool IsPaintingAhead()
+    // {
+    //     var hits = Physics2D.OverlapBoxAll(SprayCenter(), sprayBoxSize, 0f, paintingMask);
+    //     return hits != null && hits.Length > 0;
+    // }
+    // void OnDrawGizmosSelected()
+    // {
+    //     Gizmos.color = Color.cyan;     // 壺チェック
+    //     Gizmos.DrawWireCube(MopCenter(), mopBoxSize);
+
+    //     Gizmos.color = Color.magenta;  // 絵チェック
+    //     Gizmos.DrawWireCube(SprayCenter(), sprayBoxSize);
+    // }
+
+    IEnumerator MopAttack(GameObject collision)
     {
-        var hits = Physics2D.OverlapBoxAll(MopCenter(), mopBoxSize, 0f, potteryMask);
-        return hits != null && hits.Length > 0;
+        inAttack = true; //攻撃中
+        anime.SetBool("walk", false);   // ① 歩行OFF
+        int dir = RefreshDirection();   // ② 向き更新
+        anime.SetBool("attack", true);  // ③ 攻撃ON（Animatorのパラメータ名と一致していること）
+
+        // 保険：必ず再生されるかを切り分ける
+        string s = (dir == 1) ? atkBack : (dir == 0) ? atkFront : atkSide;
+        anime.CrossFade(s, 0.05f, 0, 0f);
+
+        GameManager.playerHP -= 5;
+
+        yield return new WaitForSeconds(0.5f); //時間差で発動
+
+        //時間差で接触した相手の相手の姿や状態を替えるメソッド（相手のスクリプトに壊れるメソッドを用意しておく)
+        collision.GetComponent<ExhibitBreakController>().Break();
+
+        inAttack = false; //モップアタック中フラグをOFFにする
+        anime.SetBool("attack", false);
+
     }
-
-    bool IsPaintingAhead()
-    {
-        var hits = Physics2D.OverlapBoxAll(SprayCenter(), sprayBoxSize, 0f, paintingMask);
-        return hits != null && hits.Length > 0;
-    }
-    void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.cyan;     // 壺チェック
-        Gizmos.DrawWireCube(MopCenter(), mopBoxSize);
-
-        Gizmos.color = Color.magenta;  // 絵チェック
-        Gizmos.DrawWireCube(SprayCenter(), sprayBoxSize);
-    }
-
-
 
     void GameOver()
     {
@@ -267,6 +303,24 @@ public class PlayerController : MonoBehaviour
             rbody.linearVelocity = Vector2.zero;   // 動きを止める
             this.gameObject.GetComponent<CapsuleCollider2D>().enabled = false; // 当たり判定無効
             Destroy(gameObject, 1.0f);             // 少し待って削除
+        }
+
+        //相手が陶器タグ
+        if (collision.gameObject.CompareTag("Pottery"))
+        {
+            Debug.Log("Pottery に触れた！");
+            isPottery = true; //陶器接触フラグON
+            touchObject = collision.gameObject;　//触れている相手のゲームオブジェクト情報を一時記憶
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        //相手が陶器タグ
+        if (collision.gameObject.CompareTag("Pottery"))
+        {
+            isPottery = false; //陶器接触フラグOFF
+            touchObject = null;　//触れている相手のゲームオブジェクト情報をなしに
         }
     }
 }
