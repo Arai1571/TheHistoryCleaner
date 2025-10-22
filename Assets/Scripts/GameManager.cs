@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour
     public static bool hasSpotLight; // スポットライトを所持しているかどうか。
     public static int playerHP = 100;  //プレイヤーの充電HP
     public static int Extinguisher = 0; //消化器の残数
+    public static int MoneyCount;//獲得被害総額
 
     void Start()
     {

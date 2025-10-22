@@ -10,6 +10,10 @@ public class PlayerController : MonoBehaviour
     public float axisH;  //縦方向の入力状況
     public float axisV;  //横方向の入力状況
     public float angleZ = -90f; //プレイヤーの角度計算用
+    const int WALK_HP_DRAIN = 1;   // 歩行で消費する電力量
+    const float WALK_INTERVAL = 1f;  // １秒ごと
+    float walkTimer = 0f;
+
 
     [Header("参照")]
     public GameObject spotLight; //子オブジェクトのSpotLight
@@ -81,6 +85,24 @@ public class PlayerController : MonoBehaviour
         Move(); //上下左右の入力値の取得
         angleZ = GetAngle();//その時の角度を変数angleZに反映
         Animation();  //angleZを利用してアニメーション
+
+        // 歩行中なら1秒ごとにHP-1
+        bool isWalking = anime.GetBool("walk");
+        if (isWalking)
+        {
+            walkTimer += Time.deltaTime;
+            if (walkTimer >= WALK_INTERVAL)
+            {
+                walkTimer -= WALK_INTERVAL;
+                GameManager.playerHP -= WALK_HP_DRAIN;
+                if (GameManager.playerHP <= 0) GameOver();
+            }
+        }
+        else
+        {
+            // 止まっている間はタイマーをリセット（好みで0固定）
+            walkTimer = 0f;
+        }
     }
 
     private void FixedUpdate()
@@ -171,7 +193,7 @@ public class PlayerController : MonoBehaviour
         int dirId;
         if (angleZ > -135f && angleZ < -45f) dirId = 0;        // 下
         else if (angleZ >= -45f && angleZ <= 45f) { dirId = 2; transform.localScale = new Vector2(1, 1); } // 右
-        else if (angleZ > 45f && angleZ < 135f) dirId = 1;        // 上
+        else if (angleZ > 45f && angleZ < 135f) dirId = 1;     // 上
         else { dirId = 3; transform.localScale = new Vector2(-1, 1); } // 左
         anime.SetInteger("newDirection", dirId);
         return dirId;
@@ -262,11 +284,13 @@ public class PlayerController : MonoBehaviour
             Debug.Log("Guardman に触れた！ゲームオーバー");
             GameManager.gameState = GameState.gameover;
 
-            // アニメーションや物理停止など必要なら追加
-            anime.SetTrigger("dead");              // 死亡アニメ再生
+            //死亡演出
+            anime.SetTrigger("dead");        // 死亡アニメ再生
             rbody.linearVelocity = Vector2.zero;   // 動きを止める
             this.gameObject.GetComponent<CapsuleCollider2D>().enabled = false; // 当たり判定無効
-            Destroy(gameObject, 1.0f);             // 少し待って削除
+
+            // 触れたガードマンだけ止める
+            if (collision.TryGetComponent(out GuardmanController g)) g.FreezeToIdleFront();
         }
 
         //相手が陶器タグ
