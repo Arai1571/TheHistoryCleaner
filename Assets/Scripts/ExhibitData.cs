@@ -23,12 +23,16 @@ public class ExhibitData : MonoBehaviour
     public PotterySize potterySize = PotterySize.Small;
     public PotteryColor potteryColor = PotteryColor.Earth;
 
+    public int MaxHP => damageNeeded;
+    public int CurrentHP => Mathf.Max(0, currentHP);
+    public float HpRatio => (float)CurrentHP / MaxHP;
+
 
     void Awake()
     {
         // 初期値
         if (damageNeeded < 1) damageNeeded = CalcSuggestedDamageNeeded();
-        currentHP = damageNeeded;
+        currentHP = damageNeeded; //HP満タンで開始
         if (valueJPY < 0) valueJPY = 0;
     }
 
@@ -46,52 +50,54 @@ public class ExhibitData : MonoBehaviour
         }
     }
 
-    //種類と属性から価値を見積もる
-    public int CalcSuggestedValueJPY()
-    {
-        if (kind == ExhibitKind.Painting)
-        {
-            // レア度に応じた係数
-            int baseC = 5_000_000; // C の目安
-            float mul = paintingRarity switch
-            {
-                PaintingRarity.S => 400f,
-                PaintingRarity.A => 100f,
-                PaintingRarity.B => 30f,
-                PaintingRarity.C => 1f,
-                PaintingRarity.D => 0.6f,
-                PaintingRarity.E => 0.3f,
-                PaintingRarity.F => 0.15f,
-                PaintingRarity.G => 0.08f,
-                PaintingRarity.H => 0.04f,
-                _ => 1f
-            };
-            return Mathf.RoundToInt(baseC * mul);
-        }
-        else // Pottery
-        {
-            // サイズ＋色で係数
-            int baseSmall = 50_000;   // 小サイズの基準
-            int baseLarge = 300_000;  // 大サイズの基準
-            int b = (potterySize == PotterySize.Small) ? baseSmall : baseLarge;
+    // //種類と属性から価値を見積もる
+    // public int CalcSuggestedValueJPY()
+    // {
+    //     if (kind == ExhibitKind.Painting)
+    //     {
+    //         // レア度に応じた係数
+    //         int baseC = 5_000_000; // C の目安
+    //         float mul = paintingRarity switch
+    //         {
+    //             PaintingRarity.S => 400f,
+    //             PaintingRarity.A => 100f,
+    //             PaintingRarity.B => 30f,
+    //             PaintingRarity.C => 1f,
+    //             PaintingRarity.D => 0.6f,
+    //             PaintingRarity.E => 0.3f,
+    //             PaintingRarity.F => 0.15f,
+    //             PaintingRarity.G => 0.08f,
+    //             PaintingRarity.H => 0.04f,
+    //             _ => 1f
+    //         };
+    //         return Mathf.RoundToInt(baseC * mul);
+    //     }
+    //     else // Pottery
+    //     {
+    //         // サイズ＋色で係数
+    //         int baseSmall = 50_000;   // 小サイズの基準
+    //         int baseLarge = 300_000;  // 大サイズの基準
+    //         int b = (potterySize == PotterySize.Small) ? baseSmall : baseLarge;
 
-            float colorMul = potteryColor switch
-            {
-                PotteryColor.Earth => 1.0f,
-                PotteryColor.Pink => 1.5f,
-                PotteryColor.Silver => 3.0f,
-                PotteryColor.Gold => 10.0f,
-                _ => 1.0f
-            };
-            return Mathf.RoundToInt(b * colorMul);
-        }
-    }
+    //         float colorMul = potteryColor switch
+    //         {
+    //             PotteryColor.Earth => 1.0f,
+    //             PotteryColor.Pink => 1.5f,
+    //             PotteryColor.Silver => 3.0f,
+    //             PotteryColor.Gold => 10.0f,
+    //             _ => 1.0f
+    //         };
+    //         return Mathf.RoundToInt(b * colorMul);
+    //     }
+    // }
 
     //ダメージ適用
     public bool ApplyDamage(int amount = 1)
     {
         if (currentHP <= 0) return false; // 既に破壊済み
         currentHP -= Mathf.Max(1, amount);
+
+        //もしすでに破壊済みなら
         if (currentHP <= 0)
         {
             //加算
@@ -101,19 +107,19 @@ public class ExhibitData : MonoBehaviour
         return false;
     }
 
-    [ContextMenu("Set Suggested DamageNeeded")]
-    void CM_SetSuggestedDamage()
-    {
-        damageNeeded = CalcSuggestedDamageNeeded();
-        Debug.Log($"{name} damageNeeded → {damageNeeded}");
-    }
+    // [ContextMenu("Set Suggested DamageNeeded")]
+    // void CM_SetSuggestedDamage()
+    // {
+    //     damageNeeded = CalcSuggestedDamageNeeded();
+    //     Debug.Log($"{name} damageNeeded → {damageNeeded}");
+    // }
 
-    [ContextMenu("Set Suggested ValueJPY")]
-    void CM_SetSuggestedValue()
-    {
-        valueJPY = CalcSuggestedValueJPY();
-        Debug.Log($"{name} valueJPY → {valueJPY:N0}");
-    }
+    // [ContextMenu("Set Suggested ValueJPY")]
+    // void CM_SetSuggestedValue()
+    // {
+    //     valueJPY = CalcSuggestedValueJPY();
+    //     Debug.Log($"{name} valueJPY → {valueJPY:N0}");
+    // }
 
     // 値の整合を軽く保つ（Inspector変更時に呼ばれる）
     void OnValidate()

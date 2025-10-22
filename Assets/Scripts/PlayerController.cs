@@ -35,7 +35,7 @@ public class PlayerController : MonoBehaviour
         anime = GetComponent<Animator>();
 
         //スポットライトを所持していればスポットライト表示
-        if (GameManager.hasSpotLight)spotLight.SetActive(true);//表示
+        if (GameManager.hasSpotLight) spotLight.SetActive(true);//表示
     }
 
     //スポットライトの入手フラグが立っていたらライトをつける
@@ -292,6 +292,14 @@ public class PlayerController : MonoBehaviour
             Debug.Log("Pottery に触れた！");
             isPottery = true; //陶器接触フラグON
             touchObject = collision.gameObject; //触れている相手のゲームオブジェクト情報を一時記憶
+
+            // ExhibitHPBar を ON にする
+            var hpBar = collision.GetComponentInChildren<ExhibitHPBar>(true);
+            if (hpBar)
+            {
+                hpBar.gameObject.SetActive(true);
+                hpBar.RefreshNow(); // 現在HPを反映して初期化
+            }
         }
 
         //相手が絵タグ
@@ -300,6 +308,14 @@ public class PlayerController : MonoBehaviour
             Debug.Log("Paintingに触れた！");
             isPainting = true; //絵接触フラグON
             touchObject = collision.gameObject; //触れている相手のゲームオブジェクト情報を一時記憶
+
+            // ExhibitHPBar を ON にする
+            var hpBar = collision.GetComponentInChildren<ExhibitHPBar>(true);
+            if (hpBar)
+            {
+                hpBar.gameObject.SetActive(true);
+                hpBar.RefreshNow(); // 現在HPを反映して初期化
+            }
         }
     }
 
@@ -310,6 +326,12 @@ public class PlayerController : MonoBehaviour
         {
             isPottery = false; //陶器接触フラグOFF
             touchObject = null; //触れている相手のゲームオブジェクト情報をなしに
+
+            var hpBar = collision.GetComponentInChildren<ExhibitHPBar>(true);
+            if (hpBar)
+            {
+                hpBar.gameObject.SetActive(false);
+            }
         }
 
         //相手が絵タグ
@@ -317,6 +339,12 @@ public class PlayerController : MonoBehaviour
         {
             isPainting = false; //絵接触フラグOFF
             touchObject = null; //触れている相手のゲームオブジェクト情報をなしに
+
+            var hpBar = collision.GetComponentInChildren<ExhibitHPBar>(true);
+            if (hpBar)
+            {
+                hpBar.gameObject.SetActive(false);
+            }
         }
     }
 }
