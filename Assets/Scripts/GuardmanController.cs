@@ -153,7 +153,7 @@ public class GuardmanController : MonoBehaviour
         isActive = false;
         axisH = axisV = 0f;
         if (!rbody) rbody = GetComponent<Rigidbody2D>();
-        if (rbody) rbody.velocity = Vector2.zero;
+        if (rbody) rbody.linearVelocity = Vector2.zero;
 
         // 「正面」向きにしてアイドルへ（あなたのマッピングで 0=下=正面）
         if (!animator) animator = GetComponentInChildren<Animator>();

@@ -102,10 +102,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2f0e26e93c1a4e50a227f6d6119f772, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  size: 0
-  color: 0
+  kind: 1
   damageNeeded: 2
-  value: 1
+  valueJPY: 10000
+  paintingRarity: 3
+  potterySize: 0
+  potteryColor: 0
 --- !u!114 &5460902421226495851
 MonoBehaviour:
   m_ObjectHideFlags: 0

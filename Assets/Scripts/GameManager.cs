@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -18,11 +19,13 @@ public class GameManager : MonoBehaviour
     public static bool hasSpotLight; // スポットライトを所持しているかどうか。
     public static int playerHP = 100;  //プレイヤーの充電HP
     public static int Extinguisher = 0; //消化器の残数
-    public static int MoneyCount;//獲得被害総額
+
+    public static int TotalValueJPY;//獲得被害総額
+    public static event Action<int> OnTotalValueChanged;
 
     void Start()
     {
-        //まずはゲーム開始状態にする
+        //ゲーム開始状態にする
         gameState = GameState.playing;
 
         //シーン名の取得
@@ -38,8 +41,6 @@ public class GameManager : MonoBehaviour
         {
             //時間差でシーン切り替え
             StartCoroutine(TitleBack());
-
-            //Invokeメソッドでも可能
         }
     }
 
@@ -50,4 +51,18 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene("Title");   //タイトルに戻る
     }
 
+    //獲得被害総額加算メソッド
+    public static void AddDamage(int amount)
+    {
+        if (amount <= 0) return;
+        TotalValueJPY += amount;
+        OnTotalValueChanged?.Invoke(TotalValueJPY);
+        // Debug.Log($"TotalValueJPY = {TotalValueJPY:N0}");
+    }
+
+    public static void ResetDamage()
+    {
+        TotalValueJPY = 0;
+        OnTotalValueChanged?.Invoke(TotalValueJPY);
+    }
 }

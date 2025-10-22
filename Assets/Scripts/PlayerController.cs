@@ -35,12 +35,7 @@ public class PlayerController : MonoBehaviour
         anime = GetComponent<Animator>();
 
         //スポットライトを所持していればスポットライト表示
-        if (GameManager.hasSpotLight)
-        {
-            spotLight.SetActive(true);//表示
-        }
-
-        rbody = GetComponent<Rigidbody2D>();
+        if (GameManager.hasSpotLight)spotLight.SetActive(true);//表示
     }
 
     //スポットライトの入手フラグが立っていたらライトをつける
@@ -66,8 +61,8 @@ public class PlayerController : MonoBehaviour
                 int dir = RefreshDirection();     // 0:Front 1:Back 2/3:Side
                 if (dir == 0) //正面を向いているなら
                 {
-                    return;
                     Debug.Log("Front では Bleach 不可");
+                    return; // コルーチンを抜ける
                 }
                 else
                 {
@@ -222,9 +217,8 @@ public class PlayerController : MonoBehaviour
         GameManager.playerHP -= 5;//HPを５減らす
         yield return new WaitForSeconds(0.5f); //時間差で発動
 
-        //時間差で接触した相手の相手の姿や状態を替えるメソッド（相手のスクリプトに壊れるメソッドを用意しておく)
-        if (targetGO && targetGO.TryGetComponent(out ExhibitBreakController ex) && ex.CanBreak())
-            ex.Break();
+        //時間差で接触した相手の相手の姿や状態を替える
+        if (targetGO && targetGO.TryGetComponent(out ExhibitBreakController ex)) ex.HitOnce();
 
         inAttack = false; //モップアタック中フラグをOFFにする
         anime.SetBool("attack", false);
@@ -248,9 +242,8 @@ public class PlayerController : MonoBehaviour
         GameManager.playerHP -= 5;//HPを５減らす
         yield return new WaitForSeconds(0.5f); //時間差で発動
 
-        //時間差で接触した相手の相手の姿や状態を替えるメソッド（相手のスクリプトに壊れるメソッドを用意しておく)
-        if (targetGO && targetGO.TryGetComponent(out ExhibitBreakController ex) && ex.CanBreak())
-            ex.Break();
+        //時間差で接触した相手の相手の姿や状態を替える
+        if (targetGO && targetGO.TryGetComponent(out ExhibitBreakController ex)) ex.HitOnce();
 
         inBleach = false; //モップアタック中フラグをOFFにする
         anime.SetBool("bleach", false);

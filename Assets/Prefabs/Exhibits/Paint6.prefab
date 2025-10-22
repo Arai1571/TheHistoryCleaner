@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6977406377576466083}
   - component: {fileID: 32008124642566992}
   - component: {fileID: 468265114571098710}
-  - component: {fileID: 860880011529151042}
+  - component: {fileID: 7626969532508951630}
   m_Layer: 9
   m_Name: Paint6
   m_TagString: Painting
@@ -152,7 +152,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: f30e8e0a01d0e414a98d7fb3820ce9e0, type: 3}
   - {fileID: 21300000, guid: a442d21d25ca0477a8d10e6e846426aa, type: 3}
   num: 0
---- !u!114 &860880011529151042
+--- !u!114 &7626969532508951630
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -161,9 +161,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 6889943832512294301}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cd72c739d15624a33a3156841177aac5, type: 3}
+  m_Script: {fileID: 11500000, guid: a2f0e26e93c1a4e50a227f6d6119f772, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rarity: 3
+  kind: 0
   damageNeeded: 1
-  value: 600
+  valueJPY: 0
+  paintingRarity: 3
+  potterySize: 0
+  potteryColor: 0
