@@ -22,7 +22,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("展示品判定用")]
     bool isPottery; //陶器に触れている
-    bool isPrinting; //絵に触れている
+    bool isPainting; //絵に触れている
     GameObject touchObject; //触れている相手
 
     void Start()
@@ -57,7 +57,7 @@ public class PlayerController : MonoBehaviour
             // 触れている対象がないなら何もしない
             if (!touchObject) return;
 
-            if (!inAttack && isPrinting)
+            if (!inAttack && isPainting)
             {
                 int dir = RefreshDirection();     // 0:Front 1:Back 2/3:Side
                 if (dir == 0) //正面を向いているなら
@@ -278,10 +278,10 @@ public class PlayerController : MonoBehaviour
         }
 
         //相手が絵タグ
-        if (collision.gameObject.CompareTag("Printing"))
+        if (collision.gameObject.CompareTag("Painting"))
         {
-            Debug.Log("Printingに触れた！");
-            isPrinting = true; //絵接触フラグON
+            Debug.Log("Paintingに触れた！");
+            isPainting = true; //絵接触フラグON
             touchObject = collision.gameObject; //触れている相手のゲームオブジェクト情報を一時記憶
         }
     }
@@ -296,9 +296,9 @@ public class PlayerController : MonoBehaviour
         }
 
         //相手が絵タグ
-        if (collision.gameObject.CompareTag("Printing"))
+        if (collision.gameObject.CompareTag("Painting"))
         {
-            isPrinting = false; //絵接触フラグOFF
+            isPainting = false; //絵接触フラグOFF
             touchObject = null; //触れている相手のゲームオブジェクト情報をなしに
         }
     }

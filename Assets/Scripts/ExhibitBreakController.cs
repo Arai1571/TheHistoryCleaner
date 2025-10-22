@@ -3,7 +3,7 @@ using UnityEngine;
 public class ExhibitBreakController : MonoBehaviour
 {
     [Header("壊れるスプライトの段階")]
-    [Tooltip("Small: 3枚（綺麗/ひび/粉砕）  Large: 4枚（綺麗/ひび/ボロボロ/粉砕）")]
+    [Tooltip("陶器ならSmall: 3枚（綺麗/ひび/粉砕） Large: 4枚（綺麗/ひび/ボロボロ/粉砕）")]
     public Sprite[] pics; //壊れる展示品のスプライト
     public int num; //現在の段階
     SpriteRenderer sr;

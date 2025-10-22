@@ -9,6 +9,7 @@ TagManager:
   - Printing
   - Smoke
   - Barrier
+  - Painting
   layers:
   - Default
   - TransparentFX

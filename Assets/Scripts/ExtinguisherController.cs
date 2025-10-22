@@ -10,10 +10,11 @@ public class ExtinguisherController : MonoBehaviour
         Invoke("FieldExpansion", deleteTime);
     }
 
-void FieldExpansion()
+    void FieldExpansion()
     {
         Instantiate(smokePrefab, transform.position, Quaternion.identity); //消化器と同じ場所にバリア生成
         Destroy(gameObject);  //消化器は消滅
+        GameManager.Extinguisher--;//所持アイテム数から１減らす
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
