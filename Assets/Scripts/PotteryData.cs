@@ -10,11 +10,10 @@ public class PotteryData : MonoBehaviour
     public PotteryColor color = PotteryColor.Earth;
 
     [Header("基本設定")]
-    public int damageNeeded = 2; //必要な叩く回数
-    public int value = 1;        //損害額(サイズ・色で変える)
+    public int damageNeeded; //必要な攻撃回数(絵なら1回、S陶器なら2回、L陶器なら3回)
+    public int value;        //損害額(サイズ・色で変える)
 
-    // [Header("壊れるスプライトの段階")]
-    // [Tooltip("Small: 3枚（綺麗/ひび/粉砕）  Large: 4枚（綺麗/ひび/ボロボロ/粉砕）")]
+
     // public Sprite[] stageSprites;
     // public SpriteRenderer sr;
 
@@ -24,7 +23,7 @@ public class PotteryData : MonoBehaviour
     // public bool showFinalSpriteOnBreak = true;
     // public float shatterShowTime = 0.06f;
 
-    int hits;
+    //int hits;
 
     // void Reset() { sr = GetComponent<SpriteRenderer>(); }
     // void Start() { ApplyStage(); }
