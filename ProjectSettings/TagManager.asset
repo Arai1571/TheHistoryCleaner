@@ -10,11 +10,12 @@ TagManager:
   - Smoke
   - Barrier
   - Painting
+  - Wall
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Wall
   - Water
   - UI
   - Player
@@ -22,7 +23,7 @@ TagManager:
   - PotteryMask
   - PaintingMask
   - Exhibit Check
-  - 
+  - DetectionArea
   - 
   - 
   - 
