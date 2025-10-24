@@ -38,10 +38,26 @@ public class GuardmanController : MonoBehaviour
         if (onSmoke) return;
         if (player == null) return;
 
+        //常にプレイヤーとの距離を測る
         float dist = Vector2.Distance(transform.position, player.transform.position);
 
-        // プレイヤーが近づいたら追跡モードに切り替え
-        isActive = (dist < reactionDistance);
+        // Raycastで視線をチェック
+        RaycastHit2D hit = Physics2D.Raycast(
+            transform.position,
+            (player.transform.position - transform.position).normalized,
+            reactionDistance,
+            LayerMask.GetMask("Wall")
+        );
+
+        // 壁が間にない かつ プレイヤーとの距離が近ければ追跡モードに切り替え
+        if (dist < reactionDistance && hit.collider == null)
+        {
+            isActive = true;
+        }
+        else
+        {
+            isActive = false;
+        }
 
         // Animatorパラメータに反映
         animator.SetBool("isActive", isActive);
@@ -70,11 +86,12 @@ public class GuardmanController : MonoBehaviour
         }
         else
         {
-            // パトロール動作
+            // アクティブでないならパトロール
             Patrol();
         }
     }
 
+    //ランダムに向きを変えてパトロールする
     void Patrol()
     {
         // 一定時間ごとに方向を変える
@@ -102,7 +119,8 @@ public class GuardmanController : MonoBehaviour
         angleZ = angle;
     }
 
-    void SetRandomPatrolDirection()
+    //パトロール中の方向転換
+    public void SetRandomPatrolDirection()
     {
         // -1〜1のランダムな方向を取得
         axisH = Random.Range(-1f, 1f);
@@ -129,7 +147,7 @@ public class GuardmanController : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Smoke"))
         {
-            onSmoke = true;
+            onSmoke = true; //Smokeにあたれば動きを止める
             return;
         }
     }
@@ -155,11 +173,10 @@ public class GuardmanController : MonoBehaviour
         if (!rbody) rbody = GetComponent<Rigidbody2D>();
         if (rbody) rbody.linearVelocity = Vector2.zero;
 
-        // 「正面」向きにしてアイドルへ（あなたのマッピングで 0=下=正面）
+        // 「正面」
         if (!animator) animator = GetComponentInChildren<Animator>();
         animator.SetBool("isActive", false);
         animator.SetInteger("newDirection", 0); // 正面
         animator.CrossFade("GuardmanIdol_front", 0.05f, 0, 0f);
     }
-
 }
