@@ -8,6 +8,8 @@ public class GameManager : MonoBehaviour
     //ゲーム状態を管理する列挙型
     public enum GameState
     {
+        title,      //タイトル画面
+        opening,//オープニング中
         playing,    // プレイ中
         talk,       // トーク中
         gameover,   // ゲームオーバー
@@ -23,6 +25,23 @@ public class GameManager : MonoBehaviour
     public static long TotalValueJPY;//獲得被害総額
     public static event Action<long> OnTotalValueChanged;
 
+    public static GameManager instance;
+
+    void Awake()
+    {
+        //シングルトン化
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
+    }
+
     void Start()
     {
         //ゲーム開始状態にする
@@ -32,6 +51,39 @@ public class GameManager : MonoBehaviour
         Scene currentScene = SceneManager.GetActiveScene();
         // シーンの名前を取得
         string sceneName = currentScene.name;
+        // シーン名から自動的に状態を設定
+        switch (sceneName)
+        {
+            case "Title":
+                gameState = GameState.title;
+                break;
+            case "Opening":
+                gameState = GameState.opening;
+                break;
+            case "Main":
+                gameState = GameState.playing;
+                break;
+            case "Ending":
+                gameState = GameState.ending;
+                break;
+            default:
+                gameState = GameState.playing;
+                break;
+        }
+    }
+
+    // 任意のシーン遷移を呼び出す汎用メソッド
+    public static void ChangeScene(string sceneName, float delay = 0f)
+    {
+        if (instance != null)
+            instance.StartCoroutine(instance.ChangeSceneAfterDelay(sceneName, delay));
+    }
+
+    // 遅延付きシーン遷移
+    IEnumerator ChangeSceneAfterDelay(string sceneName, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        SceneManager.LoadScene(sceneName);
     }
 
     public void Update()
