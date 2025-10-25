@@ -20,8 +20,8 @@ public class GameManager : MonoBehaviour
     public static int playerHP = 100;  //プレイヤーの充電HP
     public static int Extinguisher = 0; //消化器の残数
 
-    public static int TotalValueJPY;//獲得被害総額
-    public static event Action<int> OnTotalValueChanged;
+    public static long TotalValueJPY;//獲得被害総額
+    public static event Action<long> OnTotalValueChanged;
 
     void Start()
     {
@@ -52,7 +52,7 @@ public class GameManager : MonoBehaviour
     }
 
     //獲得被害総額加算メソッド
-    public static void AddDamage(int amount)
+    public static void AddDamage(long amount)
     {
         if (amount <= 0) return;
         TotalValueJPY += amount;

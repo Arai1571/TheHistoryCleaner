@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2386994999467107374}
   - component: {fileID: 3679236996170612870}
   m_Layer: 0
-  m_Name: Talk
+  m_Name: Paper
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 3606768556348203267}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 11.67, y: 4.3, z: 0}
+  m_LocalPosition: {x: 0, y: 0.71, z: 0}
   m_LocalScale: {x: 3, y: 3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -143,6 +143,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9188216290230562082}
+  - component: {fileID: 2964742579520663790}
   m_Layer: 0
   m_Name: Talks
   m_TagString: Untagged
@@ -167,6 +168,19 @@ Transform:
   - {fileID: 5646741819789800859}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2964742579520663790
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6761073321988582930}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33048b81ca6f840b0846718b103d2659, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  message: {fileID: 11400000, guid: b231113093cf14c2bb9282eefea4e5d3, type: 2}
 --- !u!1 &7932636935363033933
 GameObject:
   m_ObjectHideFlags: 0
@@ -179,7 +193,7 @@ GameObject:
   - component: {fileID: 6133630841527245032}
   - component: {fileID: 1894949879339739722}
   m_Layer: 0
-  m_Name: TalkTable
+  m_Name: Table
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -194,7 +208,7 @@ Transform:
   m_GameObject: {fileID: 7932636935363033933}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 11.66, y: 3.56, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 3, y: 3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

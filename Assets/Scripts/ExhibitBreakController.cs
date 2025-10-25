@@ -33,6 +33,7 @@ public class ExhibitBreakController : MonoBehaviour
         {
             int idx = Mathf.Clamp(num, 0, pics.Length - 1);
             sr.sprite = pics[idx];
+
         }
     }
 
@@ -44,6 +45,11 @@ public class ExhibitBreakController : MonoBehaviour
         // 段階表示を進める
         if (pics != null && pics.Length > 0 && num < pics.Length - 1)
         {
+            if (CompareTag("Pottery"))//陶磁器なら
+            {
+                SoundManager.instance.SEPlay(SEType.Attack);//壊れる音を鳴らす
+            }
+
             num++;
             ApplyStage();
         }

@@ -29,6 +29,10 @@ public class PlayerController : MonoBehaviour
     bool isPainting; //絵に触れている
     GameObject touchObject; //触れている相手
 
+    [Header("足音判定用")]
+    float footstepInterval = 0.3f; //足音間隔
+    float footstepTimer; //時間計測
+
     void Start()
     {
         rbody = GetComponent<Rigidbody2D>();
@@ -80,6 +84,7 @@ public class PlayerController : MonoBehaviour
         Move(); //上下左右の入力値の取得
         angleZ = GetAngle();//その時の角度を変数angleZに反映
         Animation();  //angleZを利用してアニメーション
+        HandleFootsteps();    // 足音処理
 
         // 歩行中なら1秒ごとにHP-1
         bool isWalking = anime.GetBool("walk");
@@ -235,6 +240,8 @@ public class PlayerController : MonoBehaviour
         if (dir == 0) { inBleach = false; yield break; } // 正面は禁止（保険）
         anime.SetBool("bleach", true);  // 攻撃ON
 
+        SoundManager.instance.SEPlay(SEType.Spray); //スプレー音を鳴らす
+
         // Back,Sideのアニメ再生
         string s = (dir == 1) ? bleBack : bleSide;
         anime.CrossFade(s, 0.05f, 0, 0f);
@@ -256,13 +263,11 @@ public class PlayerController : MonoBehaviour
             //ゲームStateを変える
             GameManager.gameState = GameState.gameover;
 
+            SoundManager.instance.SEPlay(SEType.HP0); //HP0になった音を鳴らす
+
             //ゲームオーバー演出.Playerが持っている当たり判定のコンポーネント[Collider2D]の無効化
             this.gameObject.GetComponent<CapsuleCollider2D>().enabled = false;
-            rbody.linearVelocity = Vector2.zero; //動きを止める
-            spotLight.SetActive(false);//スポットライトを非表示
-            rbody.gravityScale = 1.0f;  //重力の復活
-            anime.SetTrigger("dead");   //死亡アニメクリップの発動
-            Destroy(gameObject, 1.0f); //１秒後に存在を消去
+            rbody.linearVelocity = Vector2.zero;   // 動きを止める
         }
     }
 
@@ -279,6 +284,7 @@ public class PlayerController : MonoBehaviour
 
             //死亡演出
             anime.SetTrigger("dead");        // 死亡アニメ再生
+            Invoke(nameof(PlayDeadSE), 0.5f); // 捕まってワンテンポ置いてから音を鳴らす
             rbody.linearVelocity = Vector2.zero;   // 動きを止める
             this.gameObject.GetComponent<CapsuleCollider2D>().enabled = false; // 当たり判定無効
 
@@ -319,6 +325,12 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    //死亡したときに鳴らすSE
+    void PlayDeadSE()
+    {
+        SoundManager.instance.SEPlay(SEType.Dead);
+    }
+
     private void OnTriggerExit2D(Collider2D collision)
     {
         //相手が陶器タグ
@@ -345,6 +357,26 @@ public class PlayerController : MonoBehaviour
             {
                 hpBar.gameObject.SetActive(false);
             }
+        }
+    }
+
+    //足音
+    void HandleFootsteps()
+    {
+        //プレイヤーが動いていれば
+        if (axisH != 0 || axisV != 0)
+        {
+            footstepTimer += Time.deltaTime; //時間計測
+
+            if (footstepTimer >= footstepInterval) //インターバルチェック
+            {
+                SoundManager.instance.SEPlay(SEType.Walk);
+                footstepTimer = 0;
+            }
+        }
+        else //動いていなければ時間計測リセット
+        {
+            footstepTimer = 0f;
         }
     }
 }

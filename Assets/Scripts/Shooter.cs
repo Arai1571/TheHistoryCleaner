@@ -24,9 +24,13 @@ public class Shooter : MonoBehaviour
 
     public void Shoot()
     {
-        if ((inShoot == true) || GameManager.Extinguisher <= 0) return;
-        GameManager.Extinguisher--;
+        if ((inShoot == true) || GameManager.Extinguisher <= 0) return; //二重攻撃防止
+        SoundManager.instance.SEPlay(SEType.Shoot); //シュート音を鳴らす
+
+        GameManager.Extinguisher--;//保持数から１減らす
+
         inShoot = true; //消化器噴射フラグを立てる
+        
         //プレイヤーの角度を入手
         float angleZ = playerCnt.angleZ;
         //Rotationが扱っているQuaternion型として準備

@@ -18,7 +18,7 @@ public class SpotLightItem : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-
+            SoundManager.instance.SEPlay(SEType.Pickup); //アイテムゲット音を鳴らす
             GameManager.hasSpotLight = true;//触れたPlayerの持っているコンポーネントhasSpotLightをオン
 
             CircleCollider2D col = GetComponent<CircleCollider2D>();

@@ -14,6 +14,7 @@ public class ExtinguisherPickup : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
+            SoundManager.instance.SEPlay(SEType.Pickup); //アイテムゲット音を鳴らす
             GameManager.Extinguisher++;
 
             //取得演出

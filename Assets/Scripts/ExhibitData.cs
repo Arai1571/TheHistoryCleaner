@@ -13,7 +13,7 @@ public class ExhibitData : MonoBehaviour
     [Header("共通")]
     public ExhibitKind kind;
     [Min(1)] public int damageNeeded; //最終的に壊すまでに必要な攻撃回数
-    [Min(0)] public int valueJPY = 0; //壊したら加算される被害額
+    [Min(0)] public long valueJPY = 0; //壊したら加算される被害額
     int currentHP; //展示品が持つHP
 
     [Header("絵 (Painting) 専用")]
@@ -50,47 +50,6 @@ public class ExhibitData : MonoBehaviour
         }
     }
 
-    // //種類と属性から価値を見積もる
-    // public int CalcSuggestedValueJPY()
-    // {
-    //     if (kind == ExhibitKind.Painting)
-    //     {
-    //         // レア度に応じた係数
-    //         int baseC = 5_000_000; // C の目安
-    //         float mul = paintingRarity switch
-    //         {
-    //             PaintingRarity.S => 400f,
-    //             PaintingRarity.A => 100f,
-    //             PaintingRarity.B => 30f,
-    //             PaintingRarity.C => 1f,
-    //             PaintingRarity.D => 0.6f,
-    //             PaintingRarity.E => 0.3f,
-    //             PaintingRarity.F => 0.15f,
-    //             PaintingRarity.G => 0.08f,
-    //             PaintingRarity.H => 0.04f,
-    //             _ => 1f
-    //         };
-    //         return Mathf.RoundToInt(baseC * mul);
-    //     }
-    //     else // Pottery
-    //     {
-    //         // サイズ＋色で係数
-    //         int baseSmall = 50_000;   // 小サイズの基準
-    //         int baseLarge = 300_000;  // 大サイズの基準
-    //         int b = (potterySize == PotterySize.Small) ? baseSmall : baseLarge;
-
-    //         float colorMul = potteryColor switch
-    //         {
-    //             PotteryColor.Earth => 1.0f,
-    //             PotteryColor.Pink => 1.5f,
-    //             PotteryColor.Silver => 3.0f,
-    //             PotteryColor.Gold => 10.0f,
-    //             _ => 1.0f
-    //         };
-    //         return Mathf.RoundToInt(b * colorMul);
-    //     }
-    // }
-
     //ダメージ適用
     public bool ApplyDamage(int amount = 1)
     {
@@ -102,26 +61,18 @@ public class ExhibitData : MonoBehaviour
         {
             //加算
             GameManager.AddDamage(valueJPY);
+            Invoke(nameof(AddMoney), 0.5f); // 0.5秒後にお金の獲得音を鳴らす
+
             return true;
         }
         return false;
     }
 
-    // [ContextMenu("Set Suggested DamageNeeded")]
-    // void CM_SetSuggestedDamage()
-    // {
-    //     damageNeeded = CalcSuggestedDamageNeeded();
-    //     Debug.Log($"{name} damageNeeded → {damageNeeded}");
-    // }
+    void AddMoney()
+    {
+        SoundManager.instance.SEPlay(SEType.Money); //お金の獲得音を鳴らす
+    }
 
-    // [ContextMenu("Set Suggested ValueJPY")]
-    // void CM_SetSuggestedValue()
-    // {
-    //     valueJPY = CalcSuggestedValueJPY();
-    //     Debug.Log($"{name} valueJPY → {valueJPY:N0}");
-    // }
-
-    // 値の整合を軽く保つ（Inspector変更時に呼ばれる）
     void OnValidate()
     {
         // 0やマイナスになってたら最低値で保護

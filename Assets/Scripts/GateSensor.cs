@@ -31,6 +31,7 @@ public class GateSensor : MonoBehaviour
         else
         {
             Debug.Log("逆方向なので反応しない");
+            SoundManager.instance.SEPlay(SEType.GateClosed); //ゲートが閉鎖している音を鳴らす
         }
     }
 
@@ -38,7 +39,7 @@ public class GateSensor : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
-             gate.SetGateOpen(false);
+            gate.SetGateOpen(false);
         }
     }
 }

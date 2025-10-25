@@ -11,6 +11,7 @@ TagManager:
   - Barrier
   - Painting
   - Wall
+  - Canvas
   layers:
   - Default
   - TransparentFX

@@ -3,48 +3,29 @@ using UnityEngine;
 public class GateController : MonoBehaviour
 {
     [Header("開閉状態")]
-    public bool open = false; // true = 開いてる, false = 閉まってる
+    public bool open = false;
 
     [Header("参照")]
     private Animator anim;
-    public Collider2D physicalCollider; // 通行制限用コライダー (IsTrigger=false のもの)
+    public Collider2D physicalCollider;//実際に通行を制限するコライダー
 
     void Start()
     {
         anim = GetComponent<Animator>();
-
-        // Inspectorで未指定なら、自分のコライダーから探す
-        if (!physicalCollider)
-        {
-            Collider2D[] cols = GetComponents<Collider2D>();
-            foreach (var c in cols)
-            {
-                if (!c.isTrigger)  // Triggerじゃない方を優先
-                {
-                    physicalCollider = c;
-                    break;
-                }
-            }
-        }
-
-        // 初期状態を反映
-        if (physicalCollider)
-            physicalCollider.enabled = !open; // 開いてるときはOFF、閉じてるときはON
+        if (!physicalCollider) physicalCollider = GetComponent<Collider2D>(); //自身のコライダーを参照
     }
 
     // Sensorから呼ばれる
     public void SetGateOpen(bool value)
     {
         if (open == value) return; // 同じ状態なら何もしない
-
+        SoundManager.instance.SEPlay(SEType.GateOpen); //ゲートの開く音を鳴らす
         open = value;
-        Debug.Log(open ? "ゲートが開いた！" : "ゲートが閉じた！");
+        Debug.Log("ゲートが開いた！");
 
-        // Animator制御
         if (anim) anim.SetBool("open", open);
 
-        // 物理コライダーON/OFF切り替え
-        if (physicalCollider)
-            physicalCollider.enabled = !open; // 開いたらOFF（通れる）、閉じたらON（ブロック）
+        // コライダーON/OFF
+        if (physicalCollider) physicalCollider.enabled = !open; // 開く時はOFF、閉じる時はON
     }
 }

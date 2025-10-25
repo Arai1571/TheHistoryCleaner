@@ -58,7 +58,7 @@ public class UIController : MonoBehaviour
 
 
     // 総額のUI更新（イベントで呼ばれる）
-    void RefreshTotalValue(int value)
+    void RefreshTotalValue(long value)
     {
         if (TotalValueJPYText)TotalValueJPYText.text = $"{value:N0}円";
     }
