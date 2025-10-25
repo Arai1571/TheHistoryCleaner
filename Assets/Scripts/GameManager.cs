@@ -46,7 +46,6 @@ public class GameManager : MonoBehaviour
     {
         //ゲーム開始状態にする
         gameState = GameState.playing;
-
         //シーン名の取得
         Scene currentScene = SceneManager.GetActiveScene();
         // シーンの名前を取得
@@ -56,18 +55,23 @@ public class GameManager : MonoBehaviour
         {
             case "Title":
                 gameState = GameState.title;
+                SoundManager.instance.PlayBgm(BGMType.Title);
                 break;
             case "Opening":
                 gameState = GameState.opening;
+                SoundManager.instance.PlayBgm(BGMType.Opening);
                 break;
             case "Main":
                 gameState = GameState.playing;
+                SoundManager.instance.PlayBgm(BGMType.InGame);
                 break;
             case "Ending":
                 gameState = GameState.ending;
+                SoundManager.instance.PlayBgm(BGMType.ending);
                 break;
             default:
                 gameState = GameState.playing;
+                SoundManager.instance.PlayBgm(BGMType.InGame);
                 break;
         }
     }

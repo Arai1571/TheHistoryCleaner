@@ -8,8 +8,10 @@ public enum BGMType
 {
     None,
     Title,
+    Opening,
     InGame,
-    InBoss
+    InBoss,
+    ending
 }
 
 //SEタイプ
@@ -32,8 +34,10 @@ public enum SEType
 public class SoundManager : MonoBehaviour
 {
     public AudioClip bgmInTitle; //タイトルBGM
+    public AudioClip bgmInOpening; //オープニング
     public AudioClip bgmInGame; //ゲーム中
     public AudioClip bgmInBoss; //ボス
+    public AudioClip bgmInEnding; //エンディング
 
     public AudioClip seShoot;
     public AudioClip seSpray;
@@ -85,12 +89,20 @@ public class SoundManager : MonoBehaviour
                     audio.clip = bgmInTitle;
                     audio.Play();
                     break;
+                case BGMType.Opening:
+                    audio.clip = bgmInOpening;
+                    audio.Play();
+                    break;
                 case BGMType.InGame:
                     audio.clip = bgmInGame;
                     audio.Play();
                     break;
                 case BGMType.InBoss:
                     audio.clip = bgmInBoss;
+                    audio.Play();
+                    break;
+                case BGMType.ending:
+                    audio.clip = bgmInEnding;
                     audio.Play();
                     break;
             }

@@ -2,31 +2,65 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
 using TMPro;
+using static GameManager;
 
 public class OpeningController : MonoBehaviour
 {
-    public OpeningMessageData message; // ScriptableObject情報
-    public Image faceImage;             // プレイヤーの表情
-    public TextMeshProUGUI nameText;
-    public TextMeshProUGUI messageText;
+    [Header("Scriptable Object")]
+    public OpeningMessageData message;
+
+    [Header("References")]
+    public GameObject player;             
+    private SpriteRenderer playerRenderer; 
+    GameObject canvas;
+    GameObject talkPanel;
+    TextMeshProUGUI nameText;
+    TextMeshProUGUI messageText;
+
+    [Header("Camera & Audio")]
     public Camera mainCam;
     public AudioSource audioSource;
 
     void Start()
     {
-        StartCoroutine(PlayOpening());
+        // カメラ自動取得
+        if (mainCam == null)
+            mainCam = Camera.main;
+
+        // プレイヤーのSpriteRendererを取得
+        if (player != null)
+            playerRenderer = player.GetComponent<SpriteRenderer>();
+
+        // UI参照取得
+        canvas = GameObject.FindGameObjectWithTag("Canvas");
+        talkPanel = canvas.transform.Find("TalkPanel").gameObject;
+        nameText = talkPanel.transform.Find("NameText").GetComponent<TextMeshProUGUI>();
+        messageText = talkPanel.transform.Find("MessageText").GetComponent<TextMeshProUGUI>();
+
+        // ステータス設定
+        GameManager.gameState = GameState.opening;
+
+        // トーク開始
+        StartCoroutine(StartConversation());
+    }
+
+    IEnumerator StartConversation()
+    {
+        talkPanel.SetActive(true);
+        yield return StartCoroutine(PlayOpening());
     }
 
     IEnumerator PlayOpening()
     {
         for (int i = 0; i < message.msgArray.Length; i++)
         {
-            var line = message.msgArray[i]; // 構造体全体
+            var line = message.msgArray[i];
 
-            // 表情
-            if (faceImage && line.face) faceImage.sprite = line.face;
+            // プレイヤーの表情を切り替える
+            if (playerRenderer && line.face)
+                playerRenderer.sprite = line.face;
 
-            // 名前・台詞リセット
+            // 名前と台詞
             nameText.text = line.speaker;
             messageText.text = "";
 
@@ -34,22 +68,30 @@ public class OpeningController : MonoBehaviour
             StartCoroutine(CameraZoom(line.zoomLevel));
 
             // 効果音
-            if (line.sfx) audioSource.PlayOneShot(line.sfx);
+            if (line.sfx)
+                audioSource.PlayOneShot(line.sfx);
 
-            // テキスト出力（1文字ずつ）
+            // テキスト出力
             foreach (char c in line.text)
             {
                 messageText.text += c;
-                yield return new WaitForSeconds(0.03f);
+                yield return new WaitForSecondsRealtime(0.07f);
             }
 
-            // セリフ間ウェイト
-            yield return new WaitForSeconds(line.waitAfter);
+            // 次のセリフまでの待機
+            yield return new WaitForSecondsRealtime(line.waitAfter);
+
+            // Eキー押下で次へ
+            yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.E));
         }
 
-        Debug.Log("Opening finished!");
+        EndConversation();
+    }
 
-        // オープニング終了 → メインへ
+    void EndConversation()
+    {
+        talkPanel.SetActive(false);
+        GameManager.gameState = GameState.playing;
         GameManager.ChangeScene("Main", 1.0f);
     }
 
@@ -59,7 +101,7 @@ public class OpeningController : MonoBehaviour
         float t = 0;
         while (t < 1)
         {
-            t += Time.deltaTime * 1.5f;
+            t += Time.unscaledDeltaTime * 1.5f;
             mainCam.orthographicSize = Mathf.Lerp(start, target, t);
             yield return null;
         }
