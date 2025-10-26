@@ -50,6 +50,23 @@ MonoBehaviour:
   bgmInGame: {fileID: 8300000, guid: 37e9220e5adf649b6b88ad81c8d1c119, type: 3}
   bgmInBoss: {fileID: 0}
   bgmInEnding: {fileID: 8300000, guid: 37e9220e5adf649b6b88ad81c8d1c119, type: 3}
+  bgmVolume: 0.35
+  CatBot: {fileID: 8300000, guid: f342ff424dd5d48888d14fed0d39060a, type: 3}
+  CatBot1: {fileID: 8300000, guid: 4911189718fde4a9d827fd8b246dbae5, type: 3}
+  CatBot2: {fileID: 8300000, guid: ce6861a2f7d4341e2bd15515b9e922db, type: 3}
+  GotBot1: {fileID: 8300000, guid: 6b6c82fcf76614abe8a7d0f9236fb770, type: 3}
+  GotBot2: {fileID: 8300000, guid: 499039924c4254676897ac78c7669c7c, type: 3}
+  GotBot3: {fileID: 8300000, guid: f0d5f9ad473554a2f903fee8365c2170, type: 3}
+  RoboTalkingBug: {fileID: 8300000, guid: 01ca0b711fdd649c1b9551b144fccf6b, type: 3}
+  BugNoise: {fileID: 8300000, guid: b3e316f16bb0549458deb2507c7e531c, type: 3}
+  seVolumeCatBot: 2
+  seVolumeCatBot1: 1.01
+  seVolumeCatBot2: 0.67
+  seVolumeGotBot1: 1
+  seVolumeGotBot2: 1
+  seVolumeGotBot3: 1
+  seVolumeRoboTalkingBug: 0.5
+  seVolumeBugNoise: 2
   seShoot: {fileID: 8300000, guid: b2c302f517d274d0c831088f0602371c, type: 3}
   seSpray: {fileID: 8300000, guid: 3abf705a67afa4d6d9e56161b1473a94, type: 3}
   seAttack: {fileID: 8300000, guid: 47f28f8d9a96e4643b4c591e049599f9, type: 3}
@@ -62,6 +79,18 @@ MonoBehaviour:
   seWalk: {fileID: 8300000, guid: f15407ffcc536425d8f26f3c5ad4910a, type: 3}
   seSmoke: {fileID: 8300000, guid: b1606f526bad84bfeb2e08d0c313be8e, type: 3}
   sePickup: {fileID: 8300000, guid: fa6c43459703f41c5be58fb9d2aca569, type: 3}
+  seVolumeShoot: 1
+  seVolumeSpray: 1
+  seVolumeAttack: 1
+  seVolumeMoney: 1
+  seVolumeDead: 1
+  seVolumeHP0: 1
+  seVolumeOil: 1
+  seVolumeGateOpen: 1
+  seVolumeGateClosed: 1
+  seVolumeWalk: 1
+  seVolumeSmoke: 1
+  seVolumePickup: 1
 --- !u!82 &7730287738963751252
 AudioSource:
   m_ObjectHideFlags: 0
@@ -74,7 +103,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 24300002, guid: ba5dbc6e8261e459ebdac4a15ee21cd5, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System.Collections;
 using UnityEngine.SceneManagement;
 
 
@@ -33,12 +34,37 @@ public enum SEType
 
 public class SoundManager : MonoBehaviour
 {
+    [Header("BGM")]
     public AudioClip bgmInTitle; //タイトルBGM
     public AudioClip bgmInOpening; //オープニング
     public AudioClip bgmInGame; //ゲーム中
     public AudioClip bgmInBoss; //ボス
     public AudioClip bgmInEnding; //エンディング
 
+    [Header("BGMVol")]
+    [Range(0f, 1f)] public float bgmVolume = 1.0f;
+
+    [Header("Opening：SE")]
+    public AudioClip CatBot;
+    public AudioClip CatBot1;
+    public AudioClip CatBot2;
+    public AudioClip GotBot1;
+    public AudioClip GotBot2;
+    public AudioClip GotBot3;
+    public AudioClip RoboTalkingBug;
+    public AudioClip BugNoise;
+
+    [Header("Opening：SEVol")]
+    [Range(0f, 2f)] public float seVolumeCatBot = 1.0f;
+    [Range(0f, 2f)] public float seVolumeCatBot1 = 1.0f;
+    [Range(0f, 2f)] public float seVolumeCatBot2 = 0.5f;
+    [Range(0f, 2f)] public float seVolumeGotBot1 = 0.5f;
+    [Range(0f, 2f)] public float seVolumeGotBot2 = 0.5f;
+    [Range(0f, 2f)] public float seVolumeGotBot3 = 0.5f;
+    [Range(0f, 2f)] public float seVolumeRoboTalkingBug = 0.5f;
+    [Range(0f, 2f)] public float seVolumeBugNoise = 2.0f;
+
+    [Header("Main：SE")]
     public AudioClip seShoot;
     public AudioClip seSpray;
     public AudioClip seAttack;
@@ -51,6 +77,20 @@ public class SoundManager : MonoBehaviour
     public AudioClip seWalk;
     public AudioClip seSmoke;
     public AudioClip sePickup;
+
+    [Header("SEVol")]
+    [Range(0f, 1f)] public float seVolumeShoot = 1.0f;
+    [Range(0f, 1f)] public float seVolumeSpray = 1.0f;
+    [Range(0f, 1f)] public float seVolumeAttack = 1.0f;
+    [Range(0f, 1f)] public float seVolumeMoney = 1.0f;
+    [Range(0f, 1f)] public float seVolumeDead = 1.0f;
+    [Range(0f, 1f)] public float seVolumeHP0 = 1.0f;
+    [Range(0f, 1f)] public float seVolumeOil = 1.0f;
+    [Range(0f, 1f)] public float seVolumeGateOpen = 1.0f;
+    [Range(0f, 1f)] public float seVolumeGateClosed = 1.0f;
+    [Range(0f, 1f)] public float seVolumeWalk = 1.0f;
+    [Range(0f, 1f)] public float seVolumeSmoke = 1.0f;
+    [Range(0f, 1f)] public float seVolumePickup = 1.0f;
 
     public static SoundManager instance; // シングルトンインスタンス
     public static BGMType playingBGM = BGMType.None; //再生中のBGM
@@ -70,9 +110,7 @@ public class SoundManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-
         audio = GetComponent<AudioSource>();
-
     }
 
     //BGM再生
@@ -82,30 +120,28 @@ public class SoundManager : MonoBehaviour
         {
             playingBGM = type;
 
-
             switch (type)
             {
                 case BGMType.Title:
                     audio.clip = bgmInTitle;
-                    audio.Play();
                     break;
                 case BGMType.Opening:
                     audio.clip = bgmInOpening;
-                    audio.Play();
                     break;
                 case BGMType.InGame:
                     audio.clip = bgmInGame;
-                    audio.Play();
                     break;
                 case BGMType.InBoss:
                     audio.clip = bgmInBoss;
-                    audio.Play();
                     break;
                 case BGMType.ending:
                     audio.clip = bgmInEnding;
-                    audio.Play();
                     break;
             }
+
+            //ボリューム反映
+            audio.volume = bgmVolume;
+            audio.Play();
         }
     }
 
@@ -115,40 +151,40 @@ public class SoundManager : MonoBehaviour
         switch (type)
         {
             case SEType.Shoot:
-                audio.PlayOneShot(seShoot);
+                audio.PlayOneShot(seShoot, seVolumeShoot);
                 break;
             case SEType.Spray:
-                audio.PlayOneShot(seSpray);
+                audio.PlayOneShot(seSpray, seVolumeSpray);
                 break;
             case SEType.Attack:
-                audio.PlayOneShot(seAttack);
+                audio.PlayOneShot(seAttack, seVolumeAttack);
                 break;
             case SEType.Money:
-                audio.PlayOneShot(seMoney);
+                audio.PlayOneShot(seMoney, seVolumeMoney);
                 break;
             case SEType.Dead:
-                audio.PlayOneShot(seDead);
+                audio.PlayOneShot(seDead, seVolumeDead);
                 break;
             case SEType.HP0:
-                audio.PlayOneShot(seHP0);
+                audio.PlayOneShot(seHP0, seVolumeHP0);
                 break;
             case SEType.Oil:
-                audio.PlayOneShot(seOil);
+                audio.PlayOneShot(seOil, seVolumeOil);
                 break;
             case SEType.GateOpen:
-                audio.PlayOneShot(seGateOpen);
+                audio.PlayOneShot(seGateOpen, seVolumeGateOpen);
                 break;
             case SEType.GateClosed:
-                audio.PlayOneShot(seGateClosed);
+                audio.PlayOneShot(seGateClosed, seVolumeGateClosed);
                 break;
             case SEType.Walk:
-                audio.PlayOneShot(seWalk);
+                audio.PlayOneShot(seWalk, seVolumeWalk);
                 break;
             case SEType.Smoke:
-                audio.PlayOneShot(seSmoke);
+                audio.PlayOneShot(seSmoke, seVolumeSmoke);
                 break;
             case SEType.Pickup:
-                audio.PlayOneShot(sePickup);
+                audio.PlayOneShot(sePickup, seVolumePickup);
                 break;
         }
     }
@@ -159,5 +195,4 @@ public class SoundManager : MonoBehaviour
         audio.Stop();
         playingBGM = BGMType.None;
     }
-
 }

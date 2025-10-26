@@ -7,19 +7,22 @@ using static GameManager;
 public class OpeningController : MonoBehaviour
 {
     [Header("Scriptable Object")]
-    public OpeningMessageData message;
+    public OpeningMessageData message; //オープニング用のメッセージデータ
 
     [Header("References")]
-    public GameObject player;             
-    private SpriteRenderer playerRenderer; 
+    public GameObject player;//表情を切り替える対象（プレイヤー）
+    private SpriteRenderer playerRenderer;//プレイヤーのスプライト
     GameObject canvas;
     GameObject talkPanel;
     TextMeshProUGUI nameText;
     TextMeshProUGUI messageText;
 
-    [Header("Camera & Audio")]
-    public Camera mainCam;
-    public AudioSource audioSource;
+    [Header("演出用")]
+    public Camera mainCam;//カメラ（ズーム制御用）
+    public AudioSource audioSource;//通常SE再生用
+    private Coroutine faceAnimCoroutine; // 表情アニメコルーチンを管理
+    int currentLineIndex = 0; // クラス内変数として追加
+    bool bugNoiseTriggered = false;//Title Bgmを停止するトリガーとなる効果音
 
     void Start()
     {
@@ -42,6 +45,7 @@ public class OpeningController : MonoBehaviour
 
         // トーク開始
         StartCoroutine(StartConversation());
+
     }
 
     IEnumerator StartConversation()
@@ -52,42 +56,100 @@ public class OpeningController : MonoBehaviour
 
     IEnumerator PlayOpening()
     {
-        for (int i = 0; i < message.msgArray.Length; i++)
+        for (currentLineIndex = 0; currentLineIndex < message.msgArray.Length; currentLineIndex++)
         {
-            var line = message.msgArray[i];
+            var line = message.msgArray[currentLineIndex];
 
-            // プレイヤーの表情を切り替える
-            if (playerRenderer && line.face)
-                playerRenderer.sprite = line.face;
+            // 古いアニメを止める
+            if (faceAnimCoroutine != null)
+            {
+                StopCoroutine(faceAnimCoroutine);
+                faceAnimCoroutine = null;
+            }
 
-            // 名前と台詞
+            // 表情アニメ（瞬き）を再生開始
+            if (playerRenderer && line.faceSprites != null && line.faceSprites.Length > 0)
+                faceAnimCoroutine = StartCoroutine(PlayFaceAnimation(line.faceSprites, 0.15f));
+
+            // 名前と台詞の更新
             nameText.text = line.speaker;
             messageText.text = "";
 
-            // カメラズーム
+            // カメラズーム演出
             StartCoroutine(CameraZoom(line.zoomLevel));
 
-            // 効果音
+            // 効果音を再生
             if (line.sfx)
+            {
                 audioSource.PlayOneShot(line.sfx);
 
-            // テキスト出力
+                // BugNoiseならBGMを止める
+                if (line.sfx.name == "SE_BugNoise")
+                {
+                    SoundManager.instance.StopBgm();
+
+                    //BugNoiseのみ確実に鳴らす
+                    AudioSource.PlayClipAtPoint(line.sfx, Vector3.zero, 1.0f);
+
+                    bugNoiseTriggered = true;
+                }
+            }
+
+            // テキスト出力（1文字ずつ）
             foreach (char c in line.text)
             {
                 messageText.text += c;
                 yield return new WaitForSecondsRealtime(0.07f);
             }
 
-            // 次のセリフまでの待機
-            yield return new WaitForSecondsRealtime(line.waitAfter);
-
-            // Eキー押下で次へ
+            // 次のセリフまで待つ
             yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.E));
+
+            // BugNoise再生後、特定のテキストが来たらBGM再開
+            if (bugNoiseTriggered && line.text.Contains("人間に造られし全ての清掃ロボたち"))
+            {
+                Debug.Log("Trigger Text Detected → Play InGame BGM");
+                SoundManager.instance.PlayBgm(BGMType.InGame);
+                bugNoiseTriggered = false;
+            }
         }
 
         EndConversation();
     }
 
+    //プレイヤーの瞬きアニメーション
+    IEnumerator PlayFaceAnimation(Sprite[] sprites, float interval = 0.2f)
+    {
+        if (sprites == null || sprites.Length == 0) yield break;
+
+        // 現在のセリフ番号を控える
+        int currentLine = currentLineIndex;  // PlayOpening()側で今の行を入れる変数を用意しておく
+
+        while (currentLineIndex == currentLine && GameManager.gameState == GameState.opening)
+        {
+            // 瞬き1回
+            for (int i = 0; i < sprites.Length; i++)
+            {
+                playerRenderer.sprite = sprites[i];
+                yield return new WaitForSecondsRealtime(interval);
+            }
+
+            // 閉じたまま少し静止
+            yield return new WaitForSecondsRealtime(interval * 10);
+
+            // 戻る
+            for (int i = sprites.Length - 2; i >= 0; i--)
+            {
+                playerRenderer.sprite = sprites[i];
+                yield return new WaitForSecondsRealtime(interval);
+            }
+
+            // 次の瞬きまでの待ち時間（自然な休憩）
+            yield return new WaitForSecondsRealtime(Random.Range(1f, 3f));
+        }
+    }
+
+    //トーク終了時の処理
     void EndConversation()
     {
         talkPanel.SetActive(false);
@@ -95,6 +157,7 @@ public class OpeningController : MonoBehaviour
         GameManager.ChangeScene("Main", 1.0f);
     }
 
+    //カメラズーム演出
     IEnumerator CameraZoom(float target)
     {
         float start = mainCam.orthographicSize;
