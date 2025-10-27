@@ -81,17 +81,28 @@ public class OpeningController : MonoBehaviour
             // 効果音を再生
             if (line.sfx)
             {
-                audioSource.PlayOneShot(line.sfx);
+                // AudioSourceが有効でなければ再生成
+                if (audioSource == null || !audioSource.isActiveAndEnabled)
+                {
+                    Debug.LogWarning("AudioSourceが無効、再作成します。");
+                    audioSource = gameObject.AddComponent<AudioSource>();
+                }
 
-                // BugNoiseならBGMを止める
+                // BugNoiseだけは特別に扱う
                 if (line.sfx.name == "SE_BugNoise")
                 {
+                    // BGMを停止
                     SoundManager.instance.StopBgm();
 
-                    //BugNoiseのみ確実に鳴らす
+                    // BugNoiseを確実に再生（AudioSourceが無効でもOK）
                     AudioSource.PlayClipAtPoint(line.sfx, Vector3.zero, 1.0f);
 
                     bugNoiseTriggered = true;
+                }
+                else
+                {
+                    // 通常SEを再生
+                    audioSource.PlayOneShot(line.sfx);
                 }
             }
 

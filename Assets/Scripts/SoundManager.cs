@@ -104,6 +104,7 @@ public class SoundManager : MonoBehaviour
         {
             instance = this;
             DontDestroyOnLoad(gameObject); // シーンが切り替わっても破棄されないようにする
+            SceneManager.sceneLoaded += OnSceneLoaded;
         }
         else
         {
@@ -112,6 +113,35 @@ public class SoundManager : MonoBehaviour
         }
         audio = GetComponent<AudioSource>();
     }
+    
+    // シーンが切り替わったら呼ばれるイベント
+private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+{
+    Debug.Log("🎵 Scene changed: " + scene.name);
+
+    switch (scene.name)
+    {
+        case "Title":
+            PlayBgm(BGMType.Title);
+            break;
+
+        case "Opening":
+            PlayBgm(BGMType.Opening);
+            break;
+
+        case "Main":
+            PlayBgm(BGMType.InGame);
+            break;
+
+        case "Boss":
+            PlayBgm(BGMType.InBoss);
+            break;
+
+        case "Ending":
+            PlayBgm(BGMType.ending);
+            break;
+    }
+}
 
     //BGM再生
     public void PlayBgm(BGMType type)

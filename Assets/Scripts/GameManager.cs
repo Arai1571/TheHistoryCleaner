@@ -29,23 +29,24 @@ public class GameManager : MonoBehaviour
 
     void Awake()
     {
-        //シングルトン化
-        if (instance == null)
-        {
-            instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
+        // シングルトン化(既存のインスタンスを残す)
+        if (instance != null && instance != this)
         {
             Destroy(gameObject);
             return;
         }
+
+        instance = this;
+        DontDestroyOnLoad(gameObject);
     }
 
     void Start()
     {
-        //ゲーム開始状態にする
-        gameState = GameState.playing;
+        if (SoundManager.instance == null) return;
+
+        // すでにBGMが流れているならスキップ
+        if (SoundManager.playingBGM != BGMType.None) return;
+        
         //シーン名の取得
         Scene currentScene = SceneManager.GetActiveScene();
         // シーンの名前を取得
@@ -92,19 +93,19 @@ public class GameManager : MonoBehaviour
 
     public void Update()
     {
-        //ゲームオーバーになったらタイトルに戻る
+        //ゲームオーバーもしくはクリアでEndingに推移
         if (gameState == GameState.gameover || gameState == GameState.gameclear)
         {
             //時間差でシーン切り替え
-            StartCoroutine(TitleBack());
+            StartCoroutine(Ending());
         }
     }
 
-    //ゲームオーバーの際に発動するコルーチン
-    IEnumerator TitleBack()
+    //ゲームオーバーもしくはクリアの際に発動するコルーチン
+    IEnumerator Ending()
     {
         yield return new WaitForSeconds(5);  //5秒まつ
-        SceneManager.LoadScene("Title");   //タイトルに戻る
+        SceneManager.LoadScene("Ending");   //タイトルに戻る
     }
 
     //獲得被害総額加算メソッド

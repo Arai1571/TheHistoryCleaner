@@ -131,7 +131,7 @@ GameObject:
   - component: {fileID: 68880642}
   - component: {fileID: 68880641}
   - component: {fileID: 68880640}
-  - component: {fileID: 68880639}
+  - component: {fileID: 68880643}
   m_Layer: 5
   m_Name: ReStartButton
   m_TagString: Untagged
@@ -159,18 +159,6 @@ RectTransform:
   m_AnchoredPosition: {x: -0.00002861, y: -56}
   m_SizeDelta: {x: 259.5, y: 89.5955}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &68880639
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 68880637}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04cf550f037dd45a2a2fc5799543bd71, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &68880640
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -215,8 +203,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 68880639}
-        m_TargetAssemblyTypeName: GameStart, Assembly-CSharp
+      - m_Target: {fileID: 68880643}
+        m_TargetAssemblyTypeName: ChangeScene, Assembly-CSharp
         m_MethodName: ReStart
         m_Mode: 1
         m_Arguments:
@@ -265,6 +253,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 68880637}
   m_CullTransparentMesh: 1
+--- !u!114 &68880643
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 68880637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8267136d2d654367a0e8f5f1400131c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &136331725
 GameObject:
   m_ObjectHideFlags: 0
@@ -677,8 +677,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 48
-  m_fontSizeBase: 48
+  m_fontSize: 38
+  m_fontSizeBase: 38
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -741,7 +741,7 @@ GameObject:
   - component: {fileID: 955213864}
   - component: {fileID: 955213863}
   - component: {fileID: 955213862}
-  - component: {fileID: 955213861}
+  - component: {fileID: 955213865}
   m_Layer: 5
   m_Name: NewGameButton
   m_TagString: Untagged
@@ -766,21 +766,9 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.00002861, y: 67}
-  m_SizeDelta: {x: 259.5, y: 100.6}
+  m_AnchoredPosition: {x: -0.00002861, y: 55}
+  m_SizeDelta: {x: 259.5, y: 90.8}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &955213861
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 955213859}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04cf550f037dd45a2a2fc5799543bd71, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &955213862
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -825,8 +813,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 955213861}
-        m_TargetAssemblyTypeName: GameStart, Assembly-CSharp
+      - m_Target: {fileID: 955213865}
+        m_TargetAssemblyTypeName: ChangeScene, Assembly-CSharp
         m_MethodName: NewGame
         m_Mode: 1
         m_Arguments:
@@ -875,6 +863,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 955213859}
   m_CullTransparentMesh: 1
+--- !u!114 &955213865
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 955213859}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8267136d2d654367a0e8f5f1400131c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &987109494
 GameObject:
   m_ObjectHideFlags: 0
@@ -1036,8 +1036,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 48
-  m_fontSizeBase: 48
+  m_fontSize: 38
+  m_fontSizeBase: 38
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
