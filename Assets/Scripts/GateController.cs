@@ -1,9 +1,13 @@
+using System.Collections;
 using UnityEngine;
 
 public class GateController : MonoBehaviour
 {
     [Header("開閉状態")]
     public bool open = false;
+
+    [Header("ゲートタイプ設定")]
+    public bool isExitGate = false; //出口ならtrue
 
     [Header("参照")]
     private Animator anim;
@@ -19,6 +23,7 @@ public class GateController : MonoBehaviour
     public void SetGateOpen(bool value)
     {
         if (open == value) return; // 同じ状態なら何もしない
+
         SoundManager.instance.SEPlay(SEType.GateOpen); //ゲートの開く音を鳴らす
         open = value;
         Debug.Log("ゲートが開いた！");

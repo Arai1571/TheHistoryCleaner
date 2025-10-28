@@ -29,7 +29,9 @@ public enum SEType
     GateClosed,
     Walk,
     Smoke,
-    Pickup
+    Pickup,
+    GameClear,
+    News
 }
 
 public class SoundManager : MonoBehaviour
@@ -95,6 +97,20 @@ public class SoundManager : MonoBehaviour
     [Range(0f, 1f)] public float seVolumeWalk = 1.0f;
     [Range(0f, 1f)] public float seVolumeSmoke = 1.0f;
     [Range(0f, 1f)] public float seVolumePickup = 1.0f;
+
+    [Header("GameClear")]
+    public AudioClip seGameClear;
+
+    [Header("GameClear:SEVol")]
+    [Range(0f, 1f)] public float seVolumeGameClear = 1.0f;
+
+
+    [Header("Ending：SE")]
+    public AudioClip seNews;
+
+    [Header("Ending:SEVol")]
+    [Range(0f, 1f)] public float seVolumeNews = 1.0f;
+
 
     public static SoundManager instance; // シングルトンインスタンス
     public static BGMType playingBGM = BGMType.None; //再生中のBGM
@@ -240,6 +256,14 @@ public class SoundManager : MonoBehaviour
             case SEType.Pickup:
                 audio.PlayOneShot(sePickup, seVolumePickup);
                 audio.volume = seVolumePickup;
+                break;
+            case SEType.GameClear:
+                audio.PlayOneShot(seGameClear, seVolumeGameClear);
+                audio.volume = seVolumePickup;
+                break;
+            case SEType.News:
+                audio.PlayOneShot(seNews, seVolumeNews);
+                audio.volume = seVolumeNews;
                 break;
         }
     }

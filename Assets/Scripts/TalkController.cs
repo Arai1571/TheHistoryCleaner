@@ -12,18 +12,25 @@ public class TalkController : MonoBehaviour
     GameObject talkPanel;         //対象となるトークUIパネル
     TextMeshProUGUI nameText;     //対象となるトークUIパネルの名前
     TextMeshProUGUI messageText;  //対象となるトークUIパネルのメッセージ
+    TextMeshProUGUI talkNextText;  //対象となるトークUIパネルのメッセージ
+    GameObject guidePanel;//対象オブジェクトに触れた時に表示されるパネル
+    TextMeshProUGUI startTalkGuide;  //対象オブジェクトに触れた時に表示されるガイド用のテキスト
 
     void Start()
     {
         canvas = GameObject.FindGameObjectWithTag("Canvas");
         talkPanel = canvas.transform.Find("TalkPanel").gameObject;
+        guidePanel = canvas.transform.Find("GuidePanel").gameObject;
         nameText = talkPanel.transform.Find("NameText").GetComponent<TextMeshProUGUI>();
         messageText = talkPanel.transform.Find("MessageText").GetComponent<TextMeshProUGUI>();
+        talkNextText = talkPanel.transform.Find("TalkNextText").GetComponent<TextMeshProUGUI>();
+        startTalkGuide = guidePanel.transform.Find("StartTalkGuide").GetComponent<TextMeshProUGUI>();
+
     }
 
     void Update()
     {
-        if (isPlayerInRange && !isTalk && Input.GetKeyDown(KeyCode.E))
+        if (isPlayerInRange && !isTalk && Input.GetKeyDown(KeyCode.E))//Eキーが押されたらトーク開始
         {
             StartConversation();  //トーク開始
         }
@@ -34,6 +41,7 @@ public class TalkController : MonoBehaviour
         isTalk = true;  //トーク中フラグを立てる
         GameManager.gameState = GameState.talk; //ステータスをTalk
         talkPanel.SetActive(true); //トークUIパネルを表示
+        guidePanel.SetActive(false);//ガイドパネルは非表示
         Time.timeScale = 0;  //ゲーム進行スピードを０
 
         //TalkProcessコルーチンの発動
@@ -78,7 +86,7 @@ public class TalkController : MonoBehaviour
             {
                 messageText.text = message.msgArray[i].message;
             }
-
+            guidePanel.SetActive(true);
             while (Input.GetKeyDown(KeyCode.E)) { StartConversation(); }//Eキーが押されたらトークスタート
 
         }
@@ -90,6 +98,7 @@ public class TalkController : MonoBehaviour
         {
             //フラグがOFF
             isPlayerInRange = false;
+            guidePanel.SetActive(false);
         }
     }
 }

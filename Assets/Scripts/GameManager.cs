@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour
     public static event Action<long> OnTotalValueChanged;
 
     public static GameManager instance;
+    float clearTimer = 0f;//クリアしてから推移するまでの時間猶予
 
     void Awake()
     {
@@ -101,12 +102,24 @@ public class GameManager : MonoBehaviour
     {
         // 現在の状態をデバッグ表示
         Debug.Log($"[GameManager] 現在のステート: {gameState}");
+        
+        // ゲームクリア時は少し待ってからエンディングへ
+        if (gameState == GameState.gameclear)
+        {
+            clearTimer += Time.deltaTime;
+            if (clearTimer >= 5.0f) // 5秒後に遷移
+            {
+                clearTimer = 0f;
+                gameState = GameState.ending;
+                StartCoroutine(Ending());
+            }
+            return;
+        }
 
-        //ゲームオーバーもしくはクリアでEndingに推移
-        if (gameState == GameState.gameover || gameState == GameState.gameclear)
+        // ゲームオーバーのときはすぐ遷移
+        if (gameState == GameState.gameover)
         {
             gameState = GameState.ending;
-            //時間差でシーン切り替え
             StartCoroutine(Ending());
         }
     }
@@ -115,6 +128,7 @@ public class GameManager : MonoBehaviour
     IEnumerator Ending()
     {
         yield return new WaitForSeconds(5);  //5秒まつ
+        SoundManager.instance.SEPlay(SEType.News); //速報音を鳴らす
         SceneManager.LoadScene("Ending");   //タイトルに戻る
     }
 

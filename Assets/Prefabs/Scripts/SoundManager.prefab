@@ -52,7 +52,7 @@ MonoBehaviour:
   bgmInEnding: {fileID: 8300000, guid: 349e14fb3910f4fd2ab3008f495a9913, type: 3}
   volumeTitle: 0.35
   volumeOpening: 1
-  volumeInGame: 1
+  volumeInGame: 0.8
   volumeInBoss: 1
   volumeEnding: 1
   CatBot: {fileID: 8300000, guid: f342ff424dd5d48888d14fed0d39060a, type: 3}
@@ -69,8 +69,8 @@ MonoBehaviour:
   seVolumeGotBot1: 1
   seVolumeGotBot2: 1
   seVolumeGotBot3: 1
-  seVolumeRoboTalkingBug: 0.5
-  seVolumeBugNoise: 2
+  seVolumeRoboTalkingBug: 0.3
+  seVolumeBugNoise: 1.7
   seShoot: {fileID: 8300000, guid: b2c302f517d274d0c831088f0602371c, type: 3}
   seSpray: {fileID: 8300000, guid: 3abf705a67afa4d6d9e56161b1473a94, type: 3}
   seAttack: {fileID: 8300000, guid: 47f28f8d9a96e4643b4c591e049599f9, type: 3}
@@ -95,6 +95,10 @@ MonoBehaviour:
   seVolumeWalk: 1
   seVolumeSmoke: 1
   seVolumePickup: 1
+  seGameClear: {fileID: 8300000, guid: aaa2aae4b787e407397495de6726050b, type: 3}
+  seVolumeGameClear: 1
+  seNews: {fileID: 8300000, guid: ae72dab3c6440412da4273345ac74da4, type: 3}
+  seVolumeNews: 1
 --- !u!82 &7730287738963751252
 AudioSource:
   m_ObjectHideFlags: 0

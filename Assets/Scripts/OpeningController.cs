@@ -16,6 +16,7 @@ public class OpeningController : MonoBehaviour
     GameObject talkPanel;
     TextMeshProUGUI nameText;
     TextMeshProUGUI messageText;
+    TextMeshProUGUI talkNextText; 
 
     [Header("演出用")]
     public Camera mainCam;//カメラ（ズーム制御用）
@@ -39,6 +40,7 @@ public class OpeningController : MonoBehaviour
         talkPanel = canvas.transform.Find("TalkPanel").gameObject;
         nameText = talkPanel.transform.Find("NameText").GetComponent<TextMeshProUGUI>();
         messageText = talkPanel.transform.Find("MessageText").GetComponent<TextMeshProUGUI>();
+        talkNextText = talkPanel.transform.Find("TalkNextText").GetComponent<TextMeshProUGUI>();
 
         // ステータス設定
         GameManager.gameState = GameState.opening;
