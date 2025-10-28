@@ -49,8 +49,12 @@ MonoBehaviour:
   bgmInOpening: {fileID: 8300000, guid: 24d98a8eda32f454fbd4eec8bd501c86, type: 3}
   bgmInGame: {fileID: 8300000, guid: 37e9220e5adf649b6b88ad81c8d1c119, type: 3}
   bgmInBoss: {fileID: 0}
-  bgmInEnding: {fileID: 8300000, guid: 37e9220e5adf649b6b88ad81c8d1c119, type: 3}
-  bgmVolume: 0.35
+  bgmInEnding: {fileID: 8300000, guid: 349e14fb3910f4fd2ab3008f495a9913, type: 3}
+  volumeTitle: 0.35
+  volumeOpening: 1
+  volumeInGame: 1
+  volumeInBoss: 1
+  volumeEnding: 1
   CatBot: {fileID: 8300000, guid: f342ff424dd5d48888d14fed0d39060a, type: 3}
   CatBot1: {fileID: 8300000, guid: 4911189718fde4a9d827fd8b246dbae5, type: 3}
   CatBot2: {fileID: 8300000, guid: ce6861a2f7d4341e2bd15515b9e922db, type: 3}
@@ -59,7 +63,7 @@ MonoBehaviour:
   GotBot3: {fileID: 8300000, guid: f0d5f9ad473554a2f903fee8365c2170, type: 3}
   RoboTalkingBug: {fileID: 8300000, guid: 01ca0b711fdd649c1b9551b144fccf6b, type: 3}
   BugNoise: {fileID: 8300000, guid: b3e316f16bb0549458deb2507c7e531c, type: 3}
-  seVolumeCatBot: 2
+  seVolumeCatBot: 1.5
   seVolumeCatBot1: 1.01
   seVolumeCatBot2: 0.67
   seVolumeGotBot1: 1

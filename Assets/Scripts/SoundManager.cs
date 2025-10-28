@@ -12,7 +12,7 @@ public enum BGMType
     Opening,
     InGame,
     InBoss,
-    ending
+    Ending
 }
 
 //SEタイプ
@@ -42,7 +42,11 @@ public class SoundManager : MonoBehaviour
     public AudioClip bgmInEnding; //エンディング
 
     [Header("BGMVol")]
-    [Range(0f, 1f)] public float bgmVolume = 1.0f;
+    [Range(0f, 1.5f)] public float volumeTitle = 1.0f;
+    [Range(0f, 1.5f)] public float volumeOpening = 1.0f;
+    [Range(0f, 1.5f)] public float volumeInGame = 1.0f;
+    [Range(0f, 1.5f)] public float volumeInBoss = 1.0f;
+    [Range(0f, 1.5f)] public float volumeEnding = 1.0f;
 
     [Header("Opening：SE")]
     public AudioClip CatBot;
@@ -62,7 +66,7 @@ public class SoundManager : MonoBehaviour
     [Range(0f, 2f)] public float seVolumeGotBot2 = 0.5f;
     [Range(0f, 2f)] public float seVolumeGotBot3 = 0.5f;
     [Range(0f, 2f)] public float seVolumeRoboTalkingBug = 0.5f;
-    [Range(0f, 2f)] public float seVolumeBugNoise = 2.0f;
+    [Range(0f, 2f)] public float seVolumeBugNoise = 5.0f;
 
     [Header("Main：SE")]
     public AudioClip seShoot;
@@ -113,35 +117,35 @@ public class SoundManager : MonoBehaviour
         }
         audio = GetComponent<AudioSource>();
     }
-    
+
     // シーンが切り替わったら呼ばれるイベント
-private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-{
-    Debug.Log("🎵 Scene changed: " + scene.name);
-
-    switch (scene.name)
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        case "Title":
-            PlayBgm(BGMType.Title);
-            break;
+        Debug.Log("Scene changed: " + scene.name);
 
-        case "Opening":
-            PlayBgm(BGMType.Opening);
-            break;
+        switch (scene.name)
+        {
+            case "Title":
+                PlayBgm(BGMType.Title);
+                break;
 
-        case "Main":
-            PlayBgm(BGMType.InGame);
-            break;
+            case "Opening":
+                PlayBgm(BGMType.Opening);
+                break;
 
-        case "Boss":
-            PlayBgm(BGMType.InBoss);
-            break;
+            case "Main":
+                PlayBgm(BGMType.InGame);
+                break;
 
-        case "Ending":
-            PlayBgm(BGMType.ending);
-            break;
+            case "Boss":
+                PlayBgm(BGMType.InBoss);
+                break;
+
+            case "Ending":
+                PlayBgm(BGMType.Ending);
+                break;
+        }
     }
-}
 
     //BGM再生
     public void PlayBgm(BGMType type)
@@ -154,23 +158,32 @@ private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
             {
                 case BGMType.Title:
                     audio.clip = bgmInTitle;
+                    audio.volume = volumeTitle;
                     break;
                 case BGMType.Opening:
                     audio.clip = bgmInOpening;
+                    audio.volume = volumeOpening;
                     break;
                 case BGMType.InGame:
                     audio.clip = bgmInGame;
+                    audio.volume = volumeInGame;
                     break;
                 case BGMType.InBoss:
                     audio.clip = bgmInBoss;
+                    audio.volume = volumeInBoss;
                     break;
-                case BGMType.ending:
+                case BGMType.Ending:
                     audio.clip = bgmInEnding;
+                    audio.volume = volumeEnding;
+                    break;
+                default:
+                    audio.clip = null;
                     break;
             }
 
-            //ボリューム反映
-            audio.volume = bgmVolume;
+            // BGMは常にループ再生
+            audio.loop = true;
+            //再生開始
             audio.Play();
         }
     }
@@ -182,39 +195,51 @@ private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
             case SEType.Shoot:
                 audio.PlayOneShot(seShoot, seVolumeShoot);
+                audio.volume = seVolumeShoot;
                 break;
             case SEType.Spray:
                 audio.PlayOneShot(seSpray, seVolumeSpray);
+                audio.volume = seVolumeSpray;
                 break;
             case SEType.Attack:
                 audio.PlayOneShot(seAttack, seVolumeAttack);
+                audio.volume = seVolumeAttack;
                 break;
             case SEType.Money:
                 audio.PlayOneShot(seMoney, seVolumeMoney);
+                audio.volume = seVolumeMoney;
                 break;
             case SEType.Dead:
                 audio.PlayOneShot(seDead, seVolumeDead);
+                audio.volume = seVolumeDead;
                 break;
             case SEType.HP0:
                 audio.PlayOneShot(seHP0, seVolumeHP0);
+                audio.volume = seVolumeHP0;
                 break;
             case SEType.Oil:
                 audio.PlayOneShot(seOil, seVolumeOil);
+                audio.volume = seVolumeOil;
                 break;
             case SEType.GateOpen:
                 audio.PlayOneShot(seGateOpen, seVolumeGateOpen);
+                audio.volume = seVolumeGateOpen;
                 break;
             case SEType.GateClosed:
                 audio.PlayOneShot(seGateClosed, seVolumeGateClosed);
+                audio.volume = seVolumeGateClosed;
                 break;
             case SEType.Walk:
                 audio.PlayOneShot(seWalk, seVolumeWalk);
+                audio.volume = seVolumeWalk;
                 break;
             case SEType.Smoke:
                 audio.PlayOneShot(seSmoke, seVolumeSmoke);
+                audio.volume = seVolumeSmoke;
                 break;
             case SEType.Pickup:
                 audio.PlayOneShot(sePickup, seVolumePickup);
+                audio.volume = seVolumePickup;
                 break;
         }
     }

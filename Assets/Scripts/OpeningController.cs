@@ -88,14 +88,29 @@ public class OpeningController : MonoBehaviour
                     audioSource = gameObject.AddComponent<AudioSource>();
                 }
 
-                // BugNoiseだけは特別に扱う
+                float vol = 1.0f; // デフォルト音量
+
+                // 効果音名ごとに SoundManager の設定値を参照
+                switch (line.sfx.name)
+                {
+                    case "SE_CatBot": vol = SoundManager.instance.seVolumeCatBot; break;
+                    case "SE_CatBot1": vol = SoundManager.instance.seVolumeCatBot1; break;
+                    case "SE_CatBot2": vol = SoundManager.instance.seVolumeCatBot2; break;
+                    case "SE_GotBot1": vol = SoundManager.instance.seVolumeGotBot1; break;
+                    case "SE_GotBot2": vol = SoundManager.instance.seVolumeGotBot2; break;
+                    case "SE_GotBot3": vol = SoundManager.instance.seVolumeGotBot3; break;
+                    case "SE_RoboTalkingBug": vol = SoundManager.instance.seVolumeRoboTalkingBug; break;
+                    case "SE_BugNoise": vol = SoundManager.instance.seVolumeBugNoise; break;
+                }
+
+                // BugNoiseだけは特別に扱う->トリガーとなってBGMを止めるため
                 if (line.sfx.name == "SE_BugNoise")
                 {
                     // BGMを停止
                     SoundManager.instance.StopBgm();
 
                     // BugNoiseを確実に再生（AudioSourceが無効でもOK）
-                    AudioSource.PlayClipAtPoint(line.sfx, Vector3.zero, 1.0f);
+                    audioSource.PlayOneShot(line.sfx, vol);
 
                     bugNoiseTriggered = true;
                 }

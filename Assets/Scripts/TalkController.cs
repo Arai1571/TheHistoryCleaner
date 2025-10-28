@@ -72,8 +72,15 @@ public class TalkController : MonoBehaviour
         //プレイヤーが領域に入ったら
         if (collision.gameObject.CompareTag("Player"))
         {
-            //フラグがON
+            //フラグがONなら表示させる
             isPlayerInRange = true;
+            for (int i = 0; i < message.msgArray.Length; i++)
+            {
+                messageText.text = message.msgArray[i].message;
+            }
+
+            while (Input.GetKeyDown(KeyCode.E)) { StartConversation(); }//Eキーが押されたらトークスタート
+
         }
     }
     private void OnTriggerExit2D(Collider2D collision)

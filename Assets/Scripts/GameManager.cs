@@ -44,13 +44,19 @@ public class GameManager : MonoBehaviour
     {
         if (SoundManager.instance == null) return;
 
+        // Mainシーンを単体で再生した場合、強制的に初期化
+        Scene currentScene = SceneManager.GetActiveScene();
+        if (currentScene.name == "Main" && gameState == GameState.title)
+        {
+            Debug.LogWarning("Mainシーン単体起動を検出 → ゲームステートを初期化");
+            gameState = GameState.playing;
+        }
+
         // すでにBGMが流れているならスキップ
         if (SoundManager.playingBGM != BGMType.None) return;
-        
-        //シーン名の取得
-        Scene currentScene = SceneManager.GetActiveScene();
         // シーンの名前を取得
         string sceneName = currentScene.name;
+
         // シーン名から自動的に状態を設定
         switch (sceneName)
         {
@@ -68,7 +74,7 @@ public class GameManager : MonoBehaviour
                 break;
             case "Ending":
                 gameState = GameState.ending;
-                SoundManager.instance.PlayBgm(BGMType.ending);
+                SoundManager.instance.PlayBgm(BGMType.Ending);
                 break;
             default:
                 gameState = GameState.playing;
@@ -93,9 +99,13 @@ public class GameManager : MonoBehaviour
 
     public void Update()
     {
+        // 現在の状態をデバッグ表示
+        Debug.Log($"[GameManager] 現在のステート: {gameState}");
+
         //ゲームオーバーもしくはクリアでEndingに推移
         if (gameState == GameState.gameover || gameState == GameState.gameclear)
         {
+            gameState = GameState.ending;
             //時間差でシーン切り替え
             StartCoroutine(Ending());
         }
@@ -117,9 +127,15 @@ public class GameManager : MonoBehaviour
         // Debug.Log($"TotalValueJPY = {TotalValueJPY:N0}");
     }
 
-    public static void ResetDamage()
+    public static void ResetAll()
     {
+        hasSpotLight = false;
+        playerHP = 100;
+        Extinguisher = 0;
         TotalValueJPY = 0;
         OnTotalValueChanged?.Invoke(TotalValueJPY);
+        // Endingの時はタイトルに戻さない
+        if (gameState != GameState.ending)
+            gameState = GameState.title;
     }
 }
