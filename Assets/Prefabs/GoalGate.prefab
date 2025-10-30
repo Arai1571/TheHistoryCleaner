@@ -110,7 +110,7 @@ GameObject:
   - component: {fileID: 6387098642275467365}
   - component: {fileID: 7135248274710989119}
   m_Layer: 0
-  m_Name: Gate2
+  m_Name: GoalGate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

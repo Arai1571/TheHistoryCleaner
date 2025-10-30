@@ -211,59 +211,45 @@ public class SoundManager : MonoBehaviour
         {
             case SEType.Shoot:
                 audio.PlayOneShot(seShoot, seVolumeShoot);
-                audio.volume = seVolumeShoot;
                 break;
             case SEType.Spray:
                 audio.PlayOneShot(seSpray, seVolumeSpray);
-                audio.volume = seVolumeSpray;
                 break;
             case SEType.Attack:
                 audio.PlayOneShot(seAttack, seVolumeAttack);
-                audio.volume = seVolumeAttack;
                 break;
             case SEType.Money:
-                audio.PlayOneShot(seMoney, seVolumeMoney);
-                audio.volume = seVolumeMoney;
+                audio.PlayOneShot(seMoney, seVolumeMoney);                
                 break;
             case SEType.Dead:
                 audio.PlayOneShot(seDead, seVolumeDead);
-                audio.volume = seVolumeDead;
                 break;
             case SEType.HP0:
                 audio.PlayOneShot(seHP0, seVolumeHP0);
-                audio.volume = seVolumeHP0;
                 break;
             case SEType.Oil:
                 audio.PlayOneShot(seOil, seVolumeOil);
-                audio.volume = seVolumeOil;
                 break;
             case SEType.GateOpen:
                 audio.PlayOneShot(seGateOpen, seVolumeGateOpen);
-                audio.volume = seVolumeGateOpen;
                 break;
             case SEType.GateClosed:
                 audio.PlayOneShot(seGateClosed, seVolumeGateClosed);
-                audio.volume = seVolumeGateClosed;
                 break;
             case SEType.Walk:
                 audio.PlayOneShot(seWalk, seVolumeWalk);
-                audio.volume = seVolumeWalk;
                 break;
             case SEType.Smoke:
                 audio.PlayOneShot(seSmoke, seVolumeSmoke);
-                audio.volume = seVolumeSmoke;
                 break;
             case SEType.Pickup:
                 audio.PlayOneShot(sePickup, seVolumePickup);
-                audio.volume = seVolumePickup;
                 break;
             case SEType.GameClear:
                 audio.PlayOneShot(seGameClear, seVolumeGameClear);
-                audio.volume = seVolumePickup;
                 break;
             case SEType.News:
                 audio.PlayOneShot(seNews, seVolumeNews);
-                audio.volume = seVolumeNews;
                 break;
         }
     }
@@ -273,5 +259,30 @@ public class SoundManager : MonoBehaviour
     {
         audio.Stop();
         playingBGM = BGMType.None;
+    }
+
+    // BGMをフェードアウトさせる
+    public void FadeOutBgm(float duration = 1.5f)
+    {
+        StartCoroutine(FadeOutCoroutine(duration));
+    }
+
+    private IEnumerator FadeOutCoroutine(float duration)
+    {
+        if (audio == null || !audio.isPlaying)
+            yield break;
+
+        float startVolume = audio.volume;
+        float time = 0f;
+
+        while (time < duration)
+        {
+            time += Time.deltaTime;
+            audio.volume = Mathf.Lerp(startVolume, 0f, time / duration);
+            yield return null;
+        }
+
+        audio.Stop();
+        audio.volume = startVolume; // 元の音量に戻す（次の曲用）
     }
 }

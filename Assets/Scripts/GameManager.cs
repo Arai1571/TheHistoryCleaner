@@ -23,7 +23,9 @@ public class GameManager : MonoBehaviour
     public static int Extinguisher = 0; //消化器の残数
 
     public static long TotalValueJPY;//獲得被害総額
-    public static event Action<long> OnTotalValueChanged;
+    public static event Action<long> OnTotalValueChanged;//被害総額が変わったときにUIを自動更新する。イベント通知。
+
+    public static bool hasEnteredMuseum = false; // 館内に一度でも入ったか
 
     public static GameManager instance;
     float clearTimer = 0f;//クリアしてから推移するまでの時間猶予
@@ -100,14 +102,11 @@ public class GameManager : MonoBehaviour
 
     public void Update()
     {
-        // 現在の状態をデバッグ表示
-        Debug.Log($"[GameManager] 現在のステート: {gameState}");
-        
         // ゲームクリア時は少し待ってからエンディングへ
         if (gameState == GameState.gameclear)
         {
             clearTimer += Time.deltaTime;
-            if (clearTimer >= 5.0f) // 5秒後に遷移
+            if (clearTimer >= 3.0f) // 3秒後に遷移
             {
                 clearTimer = 0f;
                 gameState = GameState.ending;
@@ -127,7 +126,7 @@ public class GameManager : MonoBehaviour
     //ゲームオーバーもしくはクリアの際に発動するコルーチン
     IEnumerator Ending()
     {
-        yield return new WaitForSeconds(5);  //5秒まつ
+        yield return new WaitForSeconds(1);  //1秒まつ
         SoundManager.instance.SEPlay(SEType.News); //速報音を鳴らす
         SceneManager.LoadScene("Ending");   //タイトルに戻る
     }
@@ -148,6 +147,8 @@ public class GameManager : MonoBehaviour
         Extinguisher = 0;
         TotalValueJPY = 0;
         OnTotalValueChanged?.Invoke(TotalValueJPY);
+        hasEnteredMuseum = false;
+
         // Endingの時はタイトルに戻さない
         if (gameState != GameState.ending)
             gameState = GameState.title;

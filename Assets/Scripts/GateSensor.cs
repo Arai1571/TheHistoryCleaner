@@ -49,18 +49,37 @@ public class GateSensor : MonoBehaviour
         gate.SetGateOpen(false);
         gatePanel.SetActive(false);
 
-        // ✅ 出口ゲートを通過したらゲームクリア
+        // 出口ゲートを通過したらゲームクリア
         if (isExitSensor && gate.isExitGate)
         {
+            if (!GameManager.hasEnteredMuseum)//ゴールゲート手前のInvisibleGateをくぐっていなければゲームをクリアにしない
+            {
+                Debug.Log("まだ館に入っていないので出口は無効");
+                return;
+            }
+
+            if (collision.TryGetComponent(out Animator anime))
+            {
+                anime.SetTrigger("smail");
+                Debug.Log("出口通過 → プレイヤー笑顔！");
+            }
+
             Debug.Log("出口を通過 → ゲームクリア！");
             StartCoroutine(GameClearSequence());
         }
+
     }
 
     IEnumerator GameClearSequence()
     {
+        // BGMフェードアウトなどはここで済ませる
+        SoundManager.instance.FadeOutBgm(1.5f);
+
+        // 1.5秒後にクリア音再生
+        yield return new WaitForSeconds(1.5f);
         SoundManager.instance.SEPlay(SEType.GameClear);
-        yield return new WaitForSeconds(2.0f);
+
+        // すぐにクリアステートに変更
         GameManager.gameState = GameManager.GameState.gameclear;
     }
 }

@@ -256,12 +256,11 @@ public class PlayerController : MonoBehaviour
         anime.SetBool("bleach", false);
     }
 
-    void GameOver()
+    void GameOver() //HP0によるゲームオーバー
     {
         if (GameManager.playerHP <= 0)
-        {
-            //ゲームStateを変える
-            GameManager.gameState = GameState.gameover;
+        {   
+            GameManager.gameState = GameState.gameover;//ゲームStateを変える
 
             SoundManager.instance.SEPlay(SEType.HP0); //HP0になった音を鳴らす
 
@@ -271,7 +270,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)//ガードマンに捕まった場合のゲームオーバー
     {
         // すでにゲームオーバーなら何もしない
         if (GameManager.gameState == GameState.gameover) return;
