@@ -128,7 +128,7 @@ public class GameManager : MonoBehaviour
     {
         yield return new WaitForSeconds(1);  //1秒まつ
         SoundManager.instance.SEPlay(SEType.News); //速報音を鳴らす
-        SceneManager.LoadScene("Ending");   //タイトルに戻る
+        SceneManager.LoadScene("Ending");   //Endingシーンへ推移
     }
 
     //獲得被害総額加算メソッド
@@ -148,9 +148,5 @@ public class GameManager : MonoBehaviour
         TotalValueJPY = 0;
         OnTotalValueChanged?.Invoke(TotalValueJPY);
         hasEnteredMuseum = false;
-
-        // Endingの時はタイトルに戻さない
-        if (gameState != GameState.ending)
-            gameState = GameState.title;
     }
 }

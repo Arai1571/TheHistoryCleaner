@@ -134,6 +134,12 @@ public class SoundManager : MonoBehaviour
         audio = GetComponent<AudioSource>();
     }
 
+    void Start()
+    {
+        if (SceneManager.GetActiveScene().name == "Title")
+            PlayBgm(BGMType.Title);
+    }
+
     // シーンが切り替わったら呼ばれるイベント
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
@@ -219,7 +225,7 @@ public class SoundManager : MonoBehaviour
                 audio.PlayOneShot(seAttack, seVolumeAttack);
                 break;
             case SEType.Money:
-                audio.PlayOneShot(seMoney, seVolumeMoney);                
+                audio.PlayOneShot(seMoney, seVolumeMoney);
                 break;
             case SEType.Dead:
                 audio.PlayOneShot(seDead, seVolumeDead);

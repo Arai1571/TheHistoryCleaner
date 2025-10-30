@@ -50,7 +50,7 @@ MonoBehaviour:
   bgmInGame: {fileID: 8300000, guid: 37e9220e5adf649b6b88ad81c8d1c119, type: 3}
   bgmInBoss: {fileID: 0}
   bgmInEnding: {fileID: 8300000, guid: 349e14fb3910f4fd2ab3008f495a9913, type: 3}
-  volumeTitle: 0.35
+  volumeTitle: 0.3
   volumeOpening: 1
   volumeInGame: 0.8
   volumeInBoss: 1
@@ -70,7 +70,7 @@ MonoBehaviour:
   seVolumeGotBot2: 1
   seVolumeGotBot3: 1
   seVolumeRoboTalkingBug: 0.3
-  seVolumeBugNoise: 1.7
+  seVolumeBugNoise: 1.5
   seShoot: {fileID: 8300000, guid: b2c302f517d274d0c831088f0602371c, type: 3}
   seSpray: {fileID: 8300000, guid: 3abf705a67afa4d6d9e56161b1473a94, type: 3}
   seAttack: {fileID: 8300000, guid: 47f28f8d9a96e4643b4c591e049599f9, type: 3}
