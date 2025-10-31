@@ -1,14 +1,15 @@
 # The History Cleañar(ザ・ヒストリークリーニャー)
+## サンプルゲーム
+ぜひゲームを体験してみてください！  
+[サンプル](https://arai1571.github.io/TheHistoryCleaner_PlayWeb/)
+
 ## プロジェクト概要
 プログラミング職業訓練の卒業制作として、個人で制作したトップダウン視点のオリジナル2Dゲーム。  
 夜の博物館で働く猫型清掃ロボが暴走を起こし、展示品を次々壊して回ります。館内に配置された警備員から逃げつつ。どれだけ「損額損額」を稼げるか競う背徳感に溢れたゲームです。  
   
 ![The History Cleañarタイトル画像](readme_img/Title.png)  
 ![館内マップ](readme_img/Map.png)  
-
-## サンプルゲーム
-ぜひゲームを体験してみてください！  
-[RoboSurvivorサンプル](https://arai1571.github.io/TheHistoryCleaner_PlayWeb/)
+※ 通常ゲーム操作中は、Global lightで館内を薄暗く設定しています。
 
 ## 操作方法
 前後・左右　移動：WASDキー、または矢印キー  
@@ -17,7 +18,7 @@
 説明を読む：Eキー
 
 ## 注意
-* 追いかけてくる警備員に消化器を投げつけると煙が発生し、警備んの動きを一時的に止めることができます。
+* 追いかけてくる警備員に消化器を投げつけると煙が発生し、警備員の動きを一時的に止めることができます。
 ![UI説明](readme_img/Smoke.png) 
 * 陶磁器を壊す時はモップアタック、絵画を破壊する時はブリーチスプレーが自動で切り替わります。
 * プレイヤーにもHPがあり、歩行、攻撃のたびに少しづつHPが減っていきます。HP0でゲームオーバーとなるので注意！ 
@@ -35,7 +36,7 @@ itch.io→美術館のタイル素材、展示品や警備員のアセットの�
 * BGM、SE：
 dova-s.jp->bgm
 効果音ラボ->ロボットの操作音などのSE
-どうぶつ語音声ジェネレーター->オップニングシーンで猫型ロボットたちの音声を生成
+どうぶつ語音声ジェネレーター->オープニングシーンで猫型ロボットたちの音声を生成
 * Fontデータ： Noto Sans JP-Medium SDF (TMP_Font Asset)  
 * デザインツール：Adobe Illustrator、Adobe Photoshop
 * そのほかの使用ツール：GitHub、SorceTree、Visual Studio Code
@@ -43,7 +44,7 @@ dova-s.jp->bgm
 
 ## ゲームフロー
 * オープニングシーン  
-ストーリーに入り込むために、「バグが起こって暴走してしまう猫ロボ」が伝わる演出を狙いました。あえて説明を明確に行わないことで、プレイスタートしてから詳細がわかってくる楽しさを残しています。 
+ストーリーに入り込むために、「バグが起こって暴走してしまう猫ロボ」が伝わる演出を狙いました。あえて説明を明確に行わないことで、プレイスタートしてから詳細がわかる楽しさを残しています。 
 ![オープニング画面](readme_img/Opening1.png)  
 ![オープニング画面](readme_img/Opening2.png) 
 ![オープニング画面](readme_img/Opening3.png)  
@@ -78,66 +79,126 @@ dova-s.jp->bgm
 Playerの猫型清掃ロボには、展示品に応じた２つの攻撃方法と、警備員に対する攻撃の合計３つの攻撃手段を持たせています。
 * モップアタック（陶磁器の破壊用）  
 * ブリーチスプレー（絵画の破壊用）  
-* 消化器シュート（警備員の足止め用）  
-それぞれアクションにあわせたコルーチンを構築し、繰り返し（UpDate）の中でプレイヤーの距離に応じたコルーチンを選択してきます。  
-  
-```C#
-void Update()
-    {
-        //ゲーム状態がプレイ中でなければ何もしない
-        if (GameManager.gameState != GameState.playing) return;
-        if (bossHP <= 0) return;
-        if (player == null) return;
+* 消化器シュート（警備員の足止め用） 
 
-        // ダメージ中の点滅処理
-        if (isDamage)
+## モップアタックとブリーチスプレーについて
+展示品には「ExhibitBreakController.cs」を付与し、Playerがそれぞれの攻撃をすると、陶磁器や絵画は、破壊段階に応じてスプライトを切り替える「HitOnce」がPlayerより呼び出されます。
+
+```C#
+// 1ダメージ（モップ/スプレー）が入った時にPlayerから呼ぶ
+    public void HitOnce()
+    {
+        bool broken = data ? data.ApplyDamage(1) : false;
+
+        // 段階表示を進める
+        if (pics != null && pics.Length > 0 && num < pics.Length - 1)
         {
-            Blinking();
+            if (CompareTag("Pottery"))//陶磁器なら
+            {
+                SoundManager.instance.SEPlay(SEType.Attack);//壊れる音を鳴らす
+            }
+
+            num++;
+            ApplyStage();
         }
 
-        if (isAttacking) return; // 攻撃中は処理をスキップ
-
-
-        timer += Time.deltaTime; //ゲームの経過時間
-
-        //プレイヤーとの距離を測る
-        float distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
-
-        // 攻撃のクールダウン
-        if (timer >= attackInterval)
+        if (broken)
         {
-            isAttacking = true; //攻撃中フラグをON
-            if (distanceToPlayer <= closeRange)　// Playerが近い時
-            {
-                // バリアを展開
-                StartCoroutine(ActivateBarrier());
-            }
-            else　// Playerが遠い時 (detectionRange内)
-            {
-                // タックルか球を飛ばすかをランダムで決定
-                int randomAction = Random.Range(0, 2); // 0: タックル, 1: 球を飛ばす
-
-                if (randomAction == 0)
-                {
-                    StartCoroutine(Tackle());　//タックル
-                }
-                else
-                {
-                    StartCoroutine(ShootProjectile()); //シュート
-                }
-            }
-            timer = 0; //リセット
+            // 完全破壊の演出があればここで（SE/VFX/Destroy 等）
+            // Destroy(gameObject, 0.05f);
         }
     }
 ```
-  
-<!-- ### 倒したときの爽快感
-アクションゲームとして緊張感のあるバトルの末に撃破した爽快感、達成感が大切だと思います。  
-担当したボスは撃破時に爆発エフェクトがおきるので、倒したという実感をしっかりを感じることができます。  
-また、倒してからエンディングまでにプレイヤーに達成感と余韻を残すことで、もう一度プレイしてみたくなるような手応えを目指しました。  
-  
-![爆発](readme_img/robo_readme_8.png)  
 
+プレイヤーには「PlayerCOntroller.cs」を付与し、繰り返し（UpDate）の中で、それぞれの展示品に対する攻撃コルーチンを作成。その中でHitOnceを呼び出し、Playerがスペースキーを押すたびに、展示品が自らのスプライトを変更します。
+  
+```C#
+ if (Input.GetButtonDown("Jump"))
+        {
+            // 中略
+            if (!inAttack && isPainting)
+            {
+                int dir = RefreshDirection();     // 0:Front 1:Back 2/3:Side
+                if (dir == 0) //正面を向いているなら
+                {
+                    Debug.Log("Front では Bleach 不可");
+                    return; // コルーチンを抜ける
+                }
+                else
+                {
+                    StartCoroutine(BleachSpray(touchObject));
+                    Debug.Log("絵をブリーチ！");
+                }
+            }
+            else if (!inAttack && isPottery)
+            {
+                StartCoroutine(MopAttack(touchObject));
+                Debug.Log("陶器こわす！");
+            }
+        }
+```
+```C#
+IEnumerator MopAttack(GameObject targetGO) //陶磁器に対する攻撃
+    {
+        //中略
+        //時間差で接触した相手の相手の姿や状態を替える
+        if (targetGO && targetGO.TryGetComponent(out ExhibitBreakController ex)) ex.HitOnce();
+
+        inAttack = false; //モップアタック中フラグをOFFにする
+        anime.SetBool("attack", false);
+    }
+
+    IEnumerator BleachSpray(GameObject targetGO) //絵画に対する攻撃
+    {
+        //中略
+        //時間差で接触した相手の相手の姿や状態を替える
+        if (targetGO && targetGO.TryGetComponent(out ExhibitBreakController ex)) ex.HitOnce();
+
+        inBleach = false; //モップアタック中フラグをOFFにする
+        anime.SetBool("bleach", false);
+    }
+
+```
+  
+### 倒したときの爽快感
+博物館という現実的なステージをテーマとしながらも、ゲームだからこそできる「展示品を破壊する」背徳感を大切にしました。モップアタックをした時に鳴る陶磁器の「カチャン！」としたSE、絵画にスプレーを吹きかけた時の「シューッ！」というSEにこだわリました。それらを完全に壊した後の損害金額獲得の「チャリン！」という音も追加することで、完全に破壊したタイミングをわかりやすくしつつ、ポップでシュールな楽しさを演出しました。また、Endingシーンにて獲得総額を表示することで、プレイヤーに達成感と余韻を残し、さらに甚大な損害額を狙って、もう一度プレイしてみたくなるような手応えを目指しました。  
+
+
+### テーマを選択した理由
+このゲームの発想は、ある問いから始まりました。
+
+「もしも現実の博物館に“無敵の人”が現れ、展示品を破壊したらどうなるのか？」
+
+近年、電車内や公共空間で無差別事件が実際に起きています。
+「暴力が突然文化空間に侵入する」という出来事は、もはや荒唐無稽な想像ではありません。
+本作は、そうした社会的リアリティの延長線上で、
+「文化を壊すとは何を意味するのか」「人間が作った秩序はどれほど脆いのか」
+を考えるための“もしも”の世界を提示します。
+
+### 今後の課題
+今回は限られた制作期間の中で完成まで作り上げる必要があったため、あらゆる妥協が必要でした。
+* 展示品：本来、「ツタンカーメンの銅像」「恐竜の骨格」など博物館らしい展示品も破壊するストーリーを考えていましたが、それらのアセットを破壊用にアレンジする時間が足らず、諦めてしまいました。
+* ボスステージ：モナリザが配置されたブースは当初、赤いレーザーを部屋に張り巡らせ、そのレーザーに当たらないように進む想定で考えていた。しかし、それらのスクリプトが間に合わず、警備員を大量に配置することで済ましてしまいました。
+
+上記の点についてはぜひ次回に追加してみようと思います。
+
+<!-- ## 歴史学・研究背景
+この作品の根底には、制作者の専門分野である古代中国の刑罰史・考古資料研究があります。
+とくに「刑徒俑（けいとよう）」当時の罪人を模した俑（人形）が本作の思想的な基盤になっています。
+刑徒俑は、人間の「罪」や「罰」が物質として可視化された存在であり、
+古代の社会がどのように暴力を制度化し、記憶として残したかを示しています。
+つまり文化財とは、単なる美術品ではなく、
+**暴力・死・支配の記録を保存したもの**でもあるのです。
+
+プレイヤーが操作する清掃ロボットは、破壊者であると同時に清掃者です。歴史的遺物を破壊する行為は、それらの痕跡を「消去」ことでもあります。
+
+この二重性――遺物の「破壊」と痕跡の「消去」――こそが本作の中心的なテーマです。
+プレイヤーの行動（清掃）は、暴力の後始末を続ける現代社会の姿を反映しています。
+それは、ニュースやSNSのタイムラインの中で事件を“処理”し、
+すぐに忘却していく私たち自身の行為とも重なります。 -->
+
+
+<!-- 
 ```C#
  //HPがなくなったら削除
 if (bossHP <= 0)
